@@ -1,9 +1,10 @@
-export default function Prodcuts(){
-    return(
-        <h1>
-            Products
-            Products 2
+import IndivProduct from './IndivProduct'
 
-        </h1>
-    )
+export default function Products({products}){
+
+    return products.map((individualProduct) => (
+
+        <IndivProduct key = {individualProduct.ID} individualProduct = {individualProduct} />
+
+    ))
 }

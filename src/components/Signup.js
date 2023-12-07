@@ -13,6 +13,8 @@ export default function Signup() {
 
     const [error, setError] = useState('');
     const [exito, setExito] = useState('');
+    const [activo, setActivo] = useState('false');
+    const [tipoCuenta, setTipoCuenta] = useState('');
 
     const handleSignup = (e) => {
         e.preventDefault();
@@ -21,8 +23,10 @@ export default function Signup() {
                 Nombre: nombre,
                 Email: email,
                 Password: password,
+                Rol: rol,
+
             }).then(() => {
-                setExito('Registro Exitoso. Serás redirigido a la página de inicio de sesión en 5 segundos');
+                setExito('Registro Exitoso. Serás redirigido a la página de inicio de sesión en 3 segundos');
                 setNombre('');
                 setEmail('');
                 setPassword('');
@@ -31,13 +35,21 @@ export default function Signup() {
                 setTimeout(() => {
                     setExito('');
                     history('/login'); 
-                }, 5000);
+                }, 3000);
             }).catch((error) => {
                 setError(error.message);
             });
         }).catch((error) => {
             setError(error.message);
         });
+    };
+
+
+
+
+    //menu desplegable
+    const activarMenu = () => {
+        setActivo(!activo); 
     };
 
     return (
@@ -59,16 +71,35 @@ export default function Signup() {
                 <input type='password' className='form-control' placeholder='Nombre Completo' required onChange={(e)=>setPassword(e.target.value)} value={password}></input>
                 <br/><br/>
 
-                <div class="dropdown show">
-                <a class="btn btn-secondary dropdown-toggle" href="#null" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Dropdown link
-                </a>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item" href="#Vendedor">Vendedor</a>
-                    <a class="dropdown-item" href="#Comprador">Comprador</a>
-                </div>
-                </div>
 
+
+                <div className="row">
+                    <div className="col-md-6">
+                        <div className="dropdown show">
+                            <a
+                                className="btn btn-secondary dropdown-toggle"
+                                href="#null"
+                                role="button"
+                                id="dropdownMenuLink"
+                                onClick={activarMenu}
+                                aria-haspopup="true"
+                                aria-expanded={activo ? 'true' : 'false'}
+                                style={{ width: '200px' }}>
+                                Tipo de cuenta
+                            </a>
+                            <div className={`dropdown-menu${activo ? ' show' : ''}`} aria-labelledby="dropdownMenuLink" style={{ width: '200px' }}>
+                                <button className="dropdown-item" onClick={() => { setRol('Vendedor'); activarMenu(); setTipoCuenta('Vendedor') }}>Vendedor</button>
+                                <button className="dropdown-item" onClick={() => { setRol('Comprador'); activarMenu(); setTipoCuenta('Comprador') }}>Comprador</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        {/* Mostrar la selección del dropdown */}
+                        {tipoCuenta && (
+                            <label style={{ marginTop: '10px' }}>Seleccionaste: {tipoCuenta}</label>
+                        )}
+                    </div>
+                </div>
                 <br/><br/>
                 <br/><br/>
 

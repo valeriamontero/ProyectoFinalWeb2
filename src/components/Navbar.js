@@ -5,11 +5,13 @@ import { Icon } from 'react-icons-kit';
 import { shoppingCart } from 'react-icons-kit/fa/shoppingCart';
 import {auth} from '../Config/Config'
 import { useNavigate } from 'react-router-dom';
+import {Swal} from 'sweetalert2';
 
 
 export default function Navbar({user}) {
 
     const navigate = useNavigate();
+    const vendedor = user && user.Rol ==='Vendedor';
 
     const handleLogout = () => {
         auth.signOut().then(()=>{
@@ -17,6 +19,8 @@ export default function Navbar({user}) {
             navigate('/login');
         })
     }
+
+  
 
 
     const navbarStyle = {
@@ -37,17 +41,33 @@ export default function Navbar({user}) {
 
                 </>}
 
-                {user&&<>
-                    <div><Link className='navlink' to="/">{user}</Link></div>
-                    <div className='cart-menu-btn'>
-                        <Link className='navlink' to="/cart">
-                            <Icon icon={shoppingCart} size={20}/>
-                        </Link>
-              {/* <span className='cart-indicator'>{totalQty}</span> */}
-                    </div>
-                    <div className='btn btn-danger btn-md'
-                    onClick={handleLogout}>LOGOUT</div>
-                </>}                     
+                {user && (
+                    <>
+                        <div>
+                            <Link className='navlink' to='/'>
+                                {user.Nombre}
+                            </Link>
+                        </div>
+                        {!vendedor && (
+                            <div className='cart-menu-btn'>
+                                <Link className='navlink' to='/cart' onClick={handleAddToCart}>
+                                    <Icon icon={shoppingCart} size={20} />
+                                </Link>
+                                {/* <span className='cart-indicator'>{totalQty}</span> */}
+                            </div>
+                        )}
+                        {vendedor && (
+                            <div>
+                                <Link className='navlink' to='/add-product'>
+                                    Agregar producto
+                                </Link>
+                            </div>
+                        )}
+                        <div className='btn btn-danger btn-md' onClick={handleLogout}>
+                            LOGOUT
+                        </div>
+                    </>
+                )}                    
 
 
 
