@@ -9,10 +9,14 @@ export default function Signup() {
     const [nombre, setNombre] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [telefono, setTelefono] = useState('');   
+    const [direccion, setDireccion] = useState('');
     const [rol, setRol] = useState('');
 
     const [error, setError] = useState('');
     const [exito, setExito] = useState('');
+
+    //menu desplegable
     const [activo, setActivo] = useState(false);
     const [tipoCuenta, setTipoCuenta] = useState('');
 
@@ -23,6 +27,8 @@ export default function Signup() {
                 Nombre: nombre,
                 Email: email,
                 Password: password,
+                Telefono: telefono,
+                Direccion: direccion,
                 Rol: rol,
 
             }).then(() => {
@@ -30,6 +36,8 @@ export default function Signup() {
                 setNombre('');
                 setEmail('');
                 setPassword('');
+                setTelefono('');
+                setDireccion('');
                 setRol('');
                 setError('');
                 setTimeout(() => {
@@ -64,11 +72,17 @@ export default function Signup() {
                 <label>Nombre Completo</label>
                 <input type='text' className='form-control' placeholder='Nombre Completo' required onChange={(e)=>setNombre(e.target.value)} value={nombre}></input>
                 <br/><br/>
+                <label>Telefono</label>
+                <input type='text' className='form-control' placeholder='Telefono' required onChange={(e)=>setTelefono(e.target.value)} value={telefono}></input>
+                <br/><br/>
+                <label>Direccion</label>
+                <input type='text' className='form-control' placeholder='Direccion' required onChange={(e)=>setDireccion(e.target.value)} value={direccion}></input>
+                <br/><br/>
                 <label>Email</label>
-                <input type='text' className='form-control' placeholder='Nombre Completo' required onChange={(e)=>setEmail(e.target.value)} value={email}></input>
+                <input type='text' className='form-control' placeholder='Email' required onChange={(e)=>setEmail(e.target.value)} value={email}></input>
                 <br/><br/>
                 <label>Password</label>
-                <input type='password' className='form-control' placeholder='Nombre Completo' required onChange={(e)=>setPassword(e.target.value)} value={password}></input>
+                <input type='password' className='form-control' placeholder='Password' required onChange={(e)=>setPassword(e.target.value)} value={password}></input>
                 <br/><br/>
 
 
@@ -101,7 +115,6 @@ export default function Signup() {
                     </div>
                 </div>
                 <br/><br/>
-                <br/><br/>
 
 
                 <div className='btn-box'>
@@ -109,6 +122,7 @@ export default function Signup() {
                         <Link to='/login'> Aqui</Link></span>
                     <button type="submit" className='btn btn-success btn-md'>Registrarse</button>
                 </div>
+                <br></br>  <br></br>
                 
 
 

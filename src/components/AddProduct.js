@@ -1,78 +1,72 @@
-import React from "react";
-import {useState} from 'react';
-import {storage,fs} from '../Config/Config';
-import {Link} from 'react-router-dom';
+import React, { useState } from "react";
+import { storage, fs, auth } from '../Config/Config';
+import { Link } from 'react-router-dom';
 
+export default function AddProduct() {
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [price, setPrice] = useState('');
+    const [image, setImage] = useState(null);
+    const [category, setCategory] = useState('');
+    const [successMsg, setSuccessMsg] = useState('');
+    const [uploadError, setUploadError] = useState('');
+    const [imageError, setImageError] = useState('');
 
-export default function AddProduct(){
+    const types = ['image/png', 'image/jpeg', 'image/jpg'];
 
-    //funciones para agregar producto
-
-    const [title,setTitle]=useState('');
-    const [description,setDescription]=useState('');
-    const [price,setPrice]=useState('');
-    const [image,setImage]=useState(null);
-    const [category,setCategory]=useState('');  
-
-    
-
-    const [successMsg,setSuccessMsg]=useState('');
-    const [uploadError,setUploadError]=useState('');
-    const [imageError,setImageError]=useState('');
-
-    const types=['image/png','image/jpeg','image/jpg'];
-    const handleProductImg=(e)=>{
-        let selectedFile=e.target.files[0];
-        if(selectedFile&&types.includes(selectedFile.type)){
+    const handleProductImg = (e) => {
+        let selectedFile = e.target.files[0];
+        if (selectedFile && types.includes(selectedFile.type)) {
             setImage(selectedFile);
             setImageError('');
-        }else{
+        } else {
             setImage(null);
             setImageError('Por favor selecciona una imagen con formato valido');
         }
-
-    }
+    };
 
     const handleAddProducts = (e) => {
         e.preventDefault();
-        const upload = storage.ref(`product-images/${image.name}`).put(image);
-        upload.on('state_changed', snapshot => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log(progress);
-        }, error => setUploadError(error.message), () => {
-            storage
-                .ref('product-images')
-                .child(image.name)
-                .getDownloadURL()
-                .then(url => {
-                    fs.collection('Products')
-                        .add({
-                            title,
-                            description,
-                            price,
-                            url,
-                            category,
-                        })
-                        .then(() => {
-                            setSuccessMsg('Producto agregado con éxito');
-                            setTitle('');
-                            setDescription('');
-                            setPrice('');
-                            setCategory('');
-                            document.getElementById('file').value = '';
-                            setImage('');
-                            setUploadError('');
-                            setTimeout(() => {
-                                setSuccessMsg('');
-                            }, 3000);
-                        })
-                        .catch(error => setUploadError(error.message));
-                });
-        });
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+            const upload = storage.ref(`product-images/${image.name}`).put(image);
+            upload.on('state_changed', snapshot => {
+                // ... Código para monitorear la subida de la imagen
+            }, error => setUploadError(error.message), () => {
+                storage
+                    .ref('product-images')
+                    .child(image.name)
+                    .getDownloadURL()
+                    .then(url => {
+                        fs.collection('Products')
+                            .add({
+                                title,
+                                description,
+                                price,
+                                url,
+                                category,
+                                addedBy: currentUser.uid, // Asignar el UID del usuario actual
+                            })
+                            .then(() => {
+                                setSuccessMsg('Producto agregado con éxito');
+                                setTitle('');
+                                setDescription('');
+                                setPrice('');
+                                setCategory('');
+                                document.getElementById('file').value = '';
+                                setImage('');
+                                setUploadError('');
+                                setTimeout(() => {
+                                    setSuccessMsg('');
+                                }, 3000);
+                            })
+                            .catch(error => setUploadError(error.message));
+                    });
+            });
+        } else {
+            setUploadError('Usuario no autenticado');
+        }
     };
-    
-
-
 
     return(
 
@@ -127,7 +121,7 @@ export default function AddProduct(){
                 </>}
                 <br></br>     
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Link to="/" className='btn btn-success btn-md'>
+            <Link to="/panel-vendedor" className='btn btn-success btn-md'>
                 Volver
             </Link>
             </div>

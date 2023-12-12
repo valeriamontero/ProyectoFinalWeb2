@@ -57,9 +57,13 @@ export default function Navbar({user, prodTotal}) {
 
                 {user && (
                     <>
-                        <div>
+                        <div>  
+                            <Link className='navlink' to="perfil">
+                            Logueado como: {user.Nombre}
+
+                            </Link>
                             
-                                Logueado como: {user.Nombre}
+                             
                             
                         </div>
                         {!vendedor && (
@@ -74,8 +78,8 @@ export default function Navbar({user, prodTotal}) {
 
                         {vendedor && (
                             <div>
-                                <Link className='navlink' to='/add-product'>
-                                    Agregar producto
+                                <Link className='navlink' to='/panel-vendedor'>
+                                    Panel de vendedores
                                 </Link>
                             </div>
                         )}
