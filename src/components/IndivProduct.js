@@ -1,8 +1,9 @@
-export default function IndivProduct({individualProduct}){
-    console.log(individualProduct)
+export default function IndivProduct({individualProduct, addToCart}){
+    //console.log(individualProduct)
 
 
-    const handleCarrito = async () => {
+    const handleCarrito =() => {
+        addToCart(individualProduct);
     }
 
 

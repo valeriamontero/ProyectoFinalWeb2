@@ -4,6 +4,7 @@ import Signup from "./components/Signup";
 import Login from "./components/Login";
 import Error404 from "./components/Error404";
 import AddProduct from "./components/AddProduct";
+import Carrito from "./components/Carrito";
 
 
 
@@ -17,6 +18,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route component = {Error404}/>
                 <Route path="/add-product" element={<AddProduct />} />
+                <Route path="/carrito" element={<Carrito />} />
             </Routes>
         </BrowserRouter>
     </div>

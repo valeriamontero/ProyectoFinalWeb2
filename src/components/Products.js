@@ -1,10 +1,11 @@
-import IndivProduct from './IndivProduct'
+import IndivProduct from './IndivProduct';
 
-export default function Products({products}){
-
-    return products.map((individualProduct) => (
-
-        <IndivProduct key = {individualProduct.ID} individualProduct = {individualProduct} />
-
-    ))
+export default function Products({ products, addToCart }) {
+  return products.map((individualProduct) => (
+    <IndivProduct 
+      key={individualProduct.ID} 
+      individualProduct={individualProduct} 
+      addToCart={addToCart}
+    />
+  ));
 }

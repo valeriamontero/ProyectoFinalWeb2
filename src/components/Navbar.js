@@ -24,7 +24,7 @@ export default function Navbar({user}) {
 
 
     const navbarStyle = {
-        backgroundColor: '#F1EFE7' // Color hexadecimal deseado
+        backgroundColor: '#F1EFE7' 
     };
 
     return (
@@ -50,12 +50,14 @@ export default function Navbar({user}) {
                         </div>
                         {!vendedor && (
                             <div className='cart-menu-btn'>
-                                <Link className='navlink' to='/cart'>
+                                <Link className='navlink' to='/carrito'>
                                     <Icon icon={shoppingCart} size={20} />
                                 </Link>
                                 {/* <span className='cart-indicator'>{totalQty}</span> */}
                             </div>
                         )}
+
+
                         {vendedor && (
                             <div>
                                 <Link className='navlink' to='/add-product'>
@@ -63,6 +65,8 @@ export default function Navbar({user}) {
                                 </Link>
                             </div>
                         )}
+
+
                         <div className='btn btn-danger btn-md' onClick={handleLogout}>
                             LOGOUT
                         </div>

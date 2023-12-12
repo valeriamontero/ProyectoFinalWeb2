@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import Navbar from './Navbar';
 import Products from './Products';
 import { auth, fs } from '../Config/Config';
 import {Swal} from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 
 const Inicio = () => {
     const [user, setUser] = useState(null);
+    const history = useNavigate();
     
 
 
@@ -57,6 +59,43 @@ const Inicio = () => {
    /**************************************************************** */
 
 
+   /*****************************Carrito */
+
+
+    function GetUserUid(){
+        const [uid, setUid] = useState(null);
+        useEffect(() => {
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    setUid(user.uid);
+                }
+            })
+        },[])
+        return uid;
+    }
+    const uid = GetUserUid();
+
+
+    let Producto;
+    const addToCart = (product) => {
+        if (uid !== null) {
+            // console.log(product);
+            Producto = product;
+            Producto['cantidad'] = 1;
+            Producto['total'] = Producto.cantidad * Producto.price;
+            fs.collection('Carrito ' + uid).doc(product.ID).set(Producto).then(() => {
+                console.log('Producto agregado al carrito');
+            });
+        } else {
+            history('/login');
+        }
+    };
+    
+
+
+    /****************************************************************** */
+
+
 
     return (
         <>
@@ -65,7 +104,7 @@ const Inicio = () => {
                 <div className='container-flui'>
                 <h1 className='text-center'>Productos</h1>
                 <div className='products-box'> 
-                <Products products={products} />
+                <Products products={products} addToCart={addToCart} />
                 </div>
                 </div>
                 
