@@ -6,9 +6,13 @@ import { shoppingCart } from 'react-icons-kit/fa/shoppingCart';
 import {auth} from '../Config/Config'
 import { useNavigate } from 'react-router-dom';
 import {Swal} from 'sweetalert2';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { fs } from '../Config/Config';
+import Inicio from './Inicio';
 
 
-export default function Navbar({user}) {
+export default function Navbar({user, prodTotal}) {
 
     const navigate = useNavigate();
     const vendedor = user && user.Rol ==='Vendedor';
@@ -27,11 +31,21 @@ export default function Navbar({user}) {
         backgroundColor: '#F1EFE7' 
     };
 
+
+   
+    
+
+
+
+
     return (
         <div className='navbar' style={navbarStyle}>
             <div className='leftside'>
                 <div className='logo'>
+                    <Link className='navlink' to='/'>
                     <img src={logo} alt='logo' />
+                        </Link>
+                    
                 </div>
             </div>
             <div className='rightside'>
@@ -44,16 +58,16 @@ export default function Navbar({user}) {
                 {user && (
                     <>
                         <div>
-                            <Link className='navlink' to='/'>
-                                {user.Nombre}
-                            </Link>
+                            
+                                Logueado como: {user.Nombre}
+                            
                         </div>
                         {!vendedor && (
                             <div className='cart-menu-btn'>
                                 <Link className='navlink' to='/carrito'>
                                     <Icon icon={shoppingCart} size={20} />
                                 </Link>
-                                {/* <span className='cart-indicator'>{totalQty}</span> */}
+                                <span className='cart-indicator'>{prodTotal}</span> 
                             </div>
                         )}
 

@@ -90,21 +90,45 @@ const Inicio = () => {
             history('/login');
         }
     };
+
+
+
+
     
 
 
     /****************************************************************** */
 
 
+//************************************************************ */
+//Cantidad para el icono de carrito
+const [prodTotal, setprodTotal] = useState(0);
+
+//get productos carrito
+
+useEffect(() => {
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            fs.collection('Carrito ' + user.uid).onSnapshot(snapshot => {
+                const cantidad = snapshot.docs.length;
+                setprodTotal(cantidad);                 
+            });
+        } else {
+            console.log('user is not signed in to retrieve cart');
+        }
+    });
+}, []);
+
 
     return (
         <>
-            <Navbar user={user} />
+            <Navbar user={user} prodTotal={prodTotal} />
             {products.length > 0 && (
                 <div className='container-flui'>
                 <h1 className='text-center'>Productos</h1>
                 <div className='products-box'> 
-                <Products products={products} addToCart={addToCart} />
+                <Products products={products} addToCart={addToCart} user={user} />
+                
                 </div>
                 </div>
                 

@@ -13,7 +13,7 @@ export default function Signup() {
 
     const [error, setError] = useState('');
     const [exito, setExito] = useState('');
-    const [activo, setActivo] = useState('false');
+    const [activo, setActivo] = useState(false);
     const [tipoCuenta, setTipoCuenta] = useState('');
 
     const handleSignup = (e) => {
