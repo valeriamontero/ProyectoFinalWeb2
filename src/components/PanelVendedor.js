@@ -79,6 +79,12 @@ export default function PanelVendedor() {
             Swal.fire('Error', 'Debe seleccionar un producto para eliminar', 'error');
         }
     };
+
+    const handleVerOrden = () => {
+        history('/ver-orden')
+
+    }
+
     
     
     
@@ -93,7 +99,10 @@ export default function PanelVendedor() {
                     <button className="btn btn-success  me-2" onClick={handleAgregar}>Agregar Producto</button>
                     <button className="btn btn-primary me-2" onClick={handleModificarProducto}>Modificar Producto</button>
                     <button className="btn btn-danger me-2" onClick={handleEliminarProducto}>Eliminar Producto</button>
+                    <button className="btn btn-warning me-40" onClick={handleVerOrden}>Ver ordenes</button>
                 </div>
+                <h2>Mis productos en venta</h2>
+                <br/>
 
                 <table className="table table-striped">
                     <thead>

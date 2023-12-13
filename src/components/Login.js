@@ -34,6 +34,10 @@ export default function Signup(){
        
     };
 
+    const handleVolver = () => { 
+        history('/'); // Redirigir a la página principal
+    }
+
 
     return(
         <div className='container'>
@@ -54,7 +58,9 @@ export default function Signup(){
                 <div className='btn-box'>
                     <span>No tienes una cuenta? Registrarse
                         <Link to='/signup'> Aqui</Link></span>
+                        <button className='btn btn-danger btn-md'onClick= {handleVolver}>Volver a Inicio</button>
                     <button type="submit" className='btn btn-success btn-md'>Iniciar Sesion</button>
+                    
                 </div>
                 
 

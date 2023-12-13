@@ -157,19 +157,56 @@ const handleToken = async (token) => {
 
     let { estatus } = response.data;
     if (estatus === 'success') {
-        history('/');
-        Swal.fire({
-            title: "Good job!",
-            text: "You clicked the button!",
-            icon: "success"
-        });
-
-        const uid = auth.currentUser.uid;
-        const carritos = await fs.collection('Carrito ' + uid).get();
-        for(var snap of carritos.docs){
-            fs.collection('Carrito ' + uid).doc(snap.id).delete();
+        try {
+            // Crear la orden en Firebase
+            const uid = auth.currentUser.uid;
+            const carritos = await fs.collection('Carrito ' + uid).get();
+            const nuevaOrdenRef = await fs.collection('Orden').doc(); // Crea un nuevo documento para la orden
+    
+            // Aquí se creará la estructura de la orden con los productos del carrito
+            const productosOrden = [];
+    
+            for (var snap of carritos.docs) {
+                const carritoProducto = snap.data();
+    
+                const productoOrden = {
+                    productoID: carritoProducto.ID,
+                    cantidad: carritoProducto.cantidad,
+                    estado: 'pendiente',
+                    vendedor: carritoProducto.addedBy, // Utiliza el campo 'addedBy' como el vendedor del producto
+                    nombre: carritoProducto.title,
+                    photo: carritoProducto.url,
+                    precio: carritoProducto.total,
+                  
+                };
+    
+                productosOrden.push(productoOrden);
+    
+                // Elimina el producto del carrito
+                await fs.collection('Carrito ' + uid).doc(snap.id).delete();
+            }
+    
+            // Guarda todos los productos en la nueva orden
+            await nuevaOrdenRef.set({
+                compradorID: uid,
+                productos: productosOrden,
+                estado: 'pendiente'
+                // Otros datos generales de la orden si es necesario
+            });
+    
+            // Mostrar un mensaje o realizar otras acciones después de completar la operación
+            history('/');
+            Swal.fire({
+                title: "¡Éxito!",
+                text: "Se ha completado la orden y vaciado el carrito.",
+                icon: "success"
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            // Manejar errores si ocurre alguno durante el proceso
         }
     }
+    
 };
 
 

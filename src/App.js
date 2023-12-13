@@ -8,6 +8,10 @@ import Carrito from "./components/Carrito";
 import Perfil from "./components/Perfil";
 import PanelVendedor from "./components/PanelVendedor";
 import ModificarProductoIndiv from "./components/ModificarProductoIndiv";
+import PerfilPublico from "./components/PerfilPublico";
+import Calificacion from "./components/Calificacion";
+import Orden from "./components/Orden";
+import VerOrden from "./components/VerOrden";
 
 
 
@@ -25,6 +29,11 @@ function App() {
                 <Route path="/panel-vendedor" element={<PanelVendedor />} />
                 <Route path="/carrito" element={<Carrito />} />
                 <Route path="/modificar/:productId" element={<ModificarProductoIndiv/>} />
+                <Route path="/perfil-publico/:userId" element={<PerfilPublico />} />
+                <Route path="/calificacion/:userId" element={<Calificacion />} />
+                <Route path="/orden" element={<Orden/>} />
+                <Route path="/ver-orden" element={<VerOrden/>} />
+
             </Routes>
         </BrowserRouter>
     </div>

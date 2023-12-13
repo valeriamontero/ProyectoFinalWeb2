@@ -45,8 +45,10 @@ export default function Navbar({user, prodTotal}) {
                     <Link className='navlink' to='/'>
                     <img src={logo} alt='logo' />
                         </Link>
-                    
                 </div>
+
+                
+                
             </div>
             <div className='rightside'>
                 {!user&&<>
@@ -59,7 +61,7 @@ export default function Navbar({user, prodTotal}) {
                     <>
                         <div>  
                             <Link className='navlink' to="perfil">
-                            Logueado como: {user.Nombre}
+                            Bienvenido:  {user.Nombre}
 
                             </Link>
                             
@@ -67,13 +69,18 @@ export default function Navbar({user, prodTotal}) {
                             
                         </div>
                         {!vendedor && (
-                            <div className='cart-menu-btn'>
-                                <Link className='navlink' to='/carrito'>
-                                    <Icon icon={shoppingCart} size={20} />
-                                </Link>
-                                <span className='cart-indicator'>{prodTotal}</span> 
-                            </div>
-                        )}
+                    <div className='cart-menu-btn'>
+                         <Link className='navlink' to='/orden'>
+                            Mis Órdenes
+                        </Link>
+                        <Link className='navlink' to='/carrito'>
+                            <Icon icon={shoppingCart} size={20} />
+                        </Link>
+                        <span className='cart-indicator'>{prodTotal}</span>
+                    </div>
+
+                    
+                )}
 
 
                         {vendedor && (
