@@ -189,9 +189,10 @@ const handleToken = async (token) => {
             // Guarda todos los productos en la nueva orden
             await nuevaOrdenRef.set({
                 compradorID: uid,
+                Direccion: user.Direccion,
                 productos: productosOrden,
-                estado: 'pendiente'
-                // Otros datos generales de la orden si es necesario
+                estado: 'pendiente',
+               
             });
     
             // Mostrar un mensaje o realizar otras acciones después de completar la operación

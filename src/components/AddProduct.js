@@ -103,8 +103,10 @@ export default function AddProduct() {
                 <select className='form-control'value={category} onChange={(e) => setCategory(e.target.value)} >
                 <option value="">Selecciona una categoría</option>
                 <option value="mountain">Bicicleta de montaña</option>
-                <option value="road">Bicicleta de carretera</option>
-                <option value="urban">Bicicleta urbana</option>
+                <option value="carretera">Bicicleta de carretera</option>
+                <option value="electricas">Bicicleta electrica</option>
+                <option value="infantil">Bicicleta infantil</option>
+                <option value="repuestos">Repuestos y accesorios</option>
                 </select>
                 <br></br>
 
