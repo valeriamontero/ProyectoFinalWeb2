@@ -4,6 +4,8 @@ import Products from './Products';
 import { auth, fs } from '../Config/Config';
 import {Swal} from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { Dropdown, ButtonGroup, Button } from 'react-bootstrap';
+
 
 const Inicio = () => {
     const [user, setUser] = useState(null);
@@ -37,46 +39,61 @@ const Inicio = () => {
     const [categoria, setCategoria] = useState(null);
     const [categoriaNombre, setCategoriaNombre] = useState('Todos los productos');
     const [busqueda, setBusqueda] = useState('');
+    const [precioFiltro, setPrecioFiltro] = useState(null);
 
     const getProducts = async () => {
-        try {
-            let productsRef = fs.collection('Products');
-    
-            // Cambia la lógica para usar busqueda o categoria
-            if (busqueda) {
-                const normalizedQuery = busqueda.toLowerCase().trim();
-    
-                productsRef = productsRef.where('title', '>=', normalizedQuery)
-                                        .where('title', '<=', normalizedQuery + '\uf8ff');
-            } else if (categoria) {
-                productsRef = productsRef.where('category', '==', categoria);
-            }
-    
-            const productsSnapshot = await productsRef.get();
-            const filteredProducts = [];
-    
-            productsSnapshot.forEach((doc) => {
-                const data = doc.data();
-                data.ID = doc.id;
-                data.image = data.url;
-                filteredProducts.push(data);
-            });
-    
-            setProducts(filteredProducts);
-        } catch (error) {
-            console.error('Error getting products: ', error);
+    try {
+        let productsRef = fs.collection('Products');
+
+        // Cambia la lógica para usar búsqueda o categoría
+        if (busqueda) {
+            const normalizedQuery = busqueda.toLowerCase().trim();
+
+            productsRef = productsRef.where('title', '>=', normalizedQuery)
+                                    .where('title', '<=', normalizedQuery + '\uf8ff');
+        } else if (categoria) {
+            productsRef = productsRef.where('category', '==', categoria);
+        } else if (precioFiltro === 'mayor') {
+            // Ordenar por precio de mayor a menor
+            productsRef = productsRef.orderBy('price', 'desc'); 
+        } else if (precioFiltro === 'menor') {
+            // Ordenar por precio de menor a mayor
+            productsRef = productsRef.orderBy('price', 'asc'); 
         }
-    };
-    
-    useEffect(() => {
-        getProducts();
-    }, [busqueda, categoria]);
+
+        const productsSnapshot = await productsRef.get();
+        const filteredProducts = [];
+
+        productsSnapshot.forEach((doc) => {
+            const data = doc.data();
+            data.ID = doc.id;
+            data.image = data.url;
+            filteredProducts.push(data);
+        });
+
+        setProducts(filteredProducts);
+    } catch (error) {
+        console.error('Error getting products: ', error);
+    }
+};
+
+useEffect(() => {
+    getProducts();
+}, [busqueda, categoria, precioFiltro]);
 
 
     const handleCategoria = (selectedCategory, categoriaNombre) => {
         setCategoria(selectedCategory);
         setCategoriaNombre(categoriaNombre || 'Todos los productos'); 
         setBusqueda(''); // Limpiar la búsqueda al seleccionar una categoría
+    };
+
+    const handleMayor = () => {
+        setPrecioFiltro('mayor'); // Marca para filtrar por mayor precio
+    };
+
+    const handleMenor = () => {
+        setPrecioFiltro('menor'); // Marca para filtrar por menor precio
     };
     
    /**************************************************************** */
@@ -167,6 +184,22 @@ return (
                     <span onClick={() => handleCategoria('carretera', 'Bicicletas de carretera')}>
                         Bicicleta de carretera
                     </span>
+                    <br></br>
+
+                    <div className="dropdown">
+            <Dropdown as={ButtonGroup}>
+                <Button variant="secondary" id="dropdown-basic">
+                    {precioFiltro ? (precioFiltro === 'mayor' ? 'Mayor precio' : 'Menor precio') : 'Filtrar'}
+                </Button>
+
+                <Dropdown.Toggle split variant="secondary" id="dropdown-split-basic" />
+
+                <Dropdown.Menu>
+                    <Dropdown.Item onClick={handleMayor}>Mayor a menor</Dropdown.Item>
+                    <Dropdown.Item onClick={handleMenor}>Menor a mayor</Dropdown.Item>
+                </Dropdown.Menu>
+            </Dropdown>
+        </div>
                     
                 </div>
             </div>
@@ -182,6 +215,8 @@ return (
             </div>
         </div>
     </>
+
+    
 );
 };
 
