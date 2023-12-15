@@ -40,16 +40,24 @@ export default function Navbar({user, prodTotal}) {
 
     return (
         <div className='navbar' style={navbarStyle}>
-            <div className='leftside'>
-                <div className='logo'>
-                    <Link className='navlink' to='/'>
-                    <img src={logo} alt='logo' />
-                        </Link>
-                </div>
+        <div className='leftside'>
+          <div className='logo'>
+            <Link className='navlink' to='/'>
+              <img src={logo} alt='logo' />
+            </Link>
+          </div>
+          <div className='navlink'>
+            <Link className='navlink' to='/'>
+              Inicio
+            </Link>
+          </div>
+        </div>
+       
+                
 
                 
                 
-            </div>
+            
             <div className='rightside'>
                 {!user&&<>
                     <div><Link className='navlink' to="signup"> Registro</Link></div>

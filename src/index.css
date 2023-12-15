@@ -90,6 +90,8 @@
   margin: 0px 10px;  
 }
 
+
+
 @media(max-width: 450px){
   .navbar .rightside div{
     margin: 10px 0px;    
@@ -100,6 +102,25 @@
   text-decoration: none;
   color: #000;
 }
+
+.leftside {
+  display: flex;
+  align-items: center;
+}
+
+.leftside .logo {
+  width: 150px;
+  height: auto;
+  margin-right: 20px; /* Ajusta el margen según sea necesario */
+}
+
+.leftside .navlink {
+  text-decoration: none;
+  color: #000;
+  font-weight: 600;
+  font-size: 16px;
+}
+
 
 .products-container {
   display: flex;
