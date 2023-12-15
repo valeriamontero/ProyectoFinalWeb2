@@ -34,28 +34,51 @@ const Inicio = () => {
     //PRODUCTOS
 
     const [products, setProducts] = useState([]);
+    const [categoria, setCategoria] = useState(null);
+    const [categoriaNombre, setCategoriaNombre] = useState('Todos los productos');
+    const [busqueda, setBusqueda] = useState('');
 
     const getProducts = async () => {
         try {
-            const products = await fs.collection('Products').get();
-            const arrayProducts = [];
-            products.forEach((doc) => {
-                var data = doc.data();
+            let productsRef = fs.collection('Products');
+    
+            // Cambia la lógica para usar busqueda o categoria
+            if (busqueda) {
+                const normalizedQuery = busqueda.toLowerCase().trim();
+    
+                productsRef = productsRef.where('title', '>=', normalizedQuery)
+                                        .where('title', '<=', normalizedQuery + '\uf8ff');
+            } else if (categoria) {
+                productsRef = productsRef.where('category', '==', categoria);
+            }
+    
+            const productsSnapshot = await productsRef.get();
+            const filteredProducts = [];
+    
+            productsSnapshot.forEach((doc) => {
+                const data = doc.data();
                 data.ID = doc.id;
                 data.image = data.url;
-                arrayProducts.push(data);
+                filteredProducts.push(data);
             });
-            setProducts(arrayProducts);
+    
+            setProducts(filteredProducts);
         } catch (error) {
             console.error('Error getting products: ', error);
         }
     };
     
+    useEffect(() => {
+        getProducts();
+    }, [busqueda, categoria]);
 
-   useEffect(() => {
-       getProducts();
-   },[]);
 
+    const handleCategoria = (selectedCategory, categoriaNombre) => {
+        setCategoria(selectedCategory);
+        setCategoriaNombre(categoriaNombre || 'Todos los productos'); 
+        setBusqueda(''); // Limpiar la búsqueda al seleccionar una categoría
+    };
+    
    /**************************************************************** */
 
 
@@ -120,28 +143,46 @@ useEffect(() => {
 }, []);
 
 
-    return (
-        <>
-            <Navbar user={user} prodTotal={prodTotal} />
-            {products.length > 0 && (
-                <div className='container-flui'>
-                <h1 className='text-center'>Productos</h1>
-                <div className='products-box'> 
-                <Products products={products} addToCart={addToCart} user={user} />
-                
-                </div>
-                </div>
-                
-            )}
-            {products.length < 1 && (
-                <div className='container-fluid'>
-                    Cargando....
 
-                </div>
 
-            )}
-        </>
-    );
+
+return (
+    <>
+        <Navbar user={user} prodTotal={prodTotal} />
+        <div className='container-fluid d-flex'>
+            <div className='filter-menu'>
+                <div className='filter-box'>
+                    <h6>Buscar por nombre</h6>
+                <input
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                placeholder="Buscar"
+                />
+                    <br></br>
+                    <h6>Filtrar por categoría</h6>
+                    <span onClick={() => handleCategoria(null)}>Todos los productos</span>
+                    <span onClick={() => handleCategoria('mountain', 'Bicicletas de montaña')}>
+                        Bicicleta de montaña
+                    </span>
+                    <span onClick={() => handleCategoria('carretera', 'Bicicletas de carretera')}>
+                        Bicicleta de carretera
+                    </span>
+                    
+                </div>
+            </div>
+            <div className='products-container'>
+                <h1 className='text-center'>{categoriaNombre}</h1>
+                <div className='products-box'>
+                    {products.length > 0 ? (
+                        <Products products={products} addToCart={addToCart} user={user} />
+                    ) : (
+                        <h1 className='text-center'>Cargando...</h1>
+                    )}
+                </div>
+            </div>
+        </div>
+    </>
+);
 };
 
 export default Inicio;
