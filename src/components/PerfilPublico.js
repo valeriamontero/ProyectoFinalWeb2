@@ -6,13 +6,13 @@ import { useParams } from 'react-router-dom';
 
 export default function PerfilPublico() {
     const [user, setUser] = useState(null);
-    const { userId } = useParams(); // Obtener el ID de usuario de la URL
+    const { userId } = useParams(); 
     const navigate = useNavigate();
 
     useEffect(() => {
         if (userId) {
             fs.collection('users')
-                .doc(userId) // Utiliza el userId obtenido de la URL
+                .doc(userId) 
                 .get()
                 .then((doc) => {
                     if (doc.exists) {

@@ -112,7 +112,7 @@ export default function PanelVendedor() {
                             <th>Precio</th>
                             <th>Categoría</th>
                             <th>Descripción</th>
-                            <th>Codigo de Usuario</th>
+                            <th>Codigo de usuario vendedor</th>
                             <th>Imagen</th>
                         </tr>
                     </thead>
