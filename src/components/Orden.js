@@ -75,6 +75,7 @@ const Orders = () => {
                     <thead>
                         <tr>
                             <th style={{ border: '1px solid #ddd', padding: '8px' }}>ID de Orden</th>
+                            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Fecha</th>
                             <th style={{ border: '1px solid #ddd', padding: '8px' }}>Estado de la orden</th>
                             <th style={{ border: '1px solid #ddd', padding: '8px' }}>Productos</th>
                         </tr>
@@ -84,6 +85,7 @@ const Orders = () => {
                             <React.Fragment key={order.id}>
                                 <tr>
                                     <td style={{ border: '1px solid #ddd', padding: '8px' }}>{order.id}</td>
+                                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{order.fecha}</td>
                                     <td style={{ border: '1px solid #ddd', padding: '8px' }}>{order.estado}</td>
                                     <td style={{ border: '1px solid #ddd', padding: '8px' }}>
                                       

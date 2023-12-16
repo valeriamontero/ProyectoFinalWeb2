@@ -173,7 +173,7 @@ const handleToken = async (token) => {
                     productoID: carritoProducto.ID,
                     cantidad: carritoProducto.cantidad,
                     estado: 'pendiente',
-                    vendedor: carritoProducto.addedBy, // Utiliza el campo 'addedBy' como el vendedor del producto
+                    vendedor: carritoProducto.addedBy, 
                     nombre: carritoProducto.title,
                     photo: carritoProducto.url,
                     precio: carritoProducto.total,
@@ -185,6 +185,8 @@ const handleToken = async (token) => {
                 // Elimina el producto del carrito
                 await fs.collection('Carrito ' + uid).doc(snap.id).delete();
             }
+
+            const fechaActual = new Date().toISOString();
     
             // Guarda todos los productos en la nueva orden
             await nuevaOrdenRef.set({
@@ -192,6 +194,7 @@ const handleToken = async (token) => {
                 Direccion: user.Direccion,
                 productos: productosOrden,
                 estado: 'pendiente',
+                fecha: fechaActual,
                
             });
     
