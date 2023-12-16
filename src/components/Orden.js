@@ -16,6 +16,7 @@ const Orders = () => {
                     id: doc.id,
                     ...doc.data()
                 }));
+                setOrders(userOrders);
                 GetOrder(userOrders);
             });
 
@@ -53,17 +54,13 @@ const Orders = () => {
     useEffect(() => {
         orders.forEach(order => {
             const ordenCompleta = order.productos.every(producto => producto.estado === 'enviado');
-            if (ordenCompleta) {
-                fs.collection('Orden').doc(order.id).get()
-                    .then(doc => {
-                        if (doc.exists) {
-                            fs.collection('Orden').doc(order.id).update({ estado: 'completado' });
-                        } else {
-                            console.log('El documento no existe, no se puede actualizar.');
-                        }
+            if (ordenCompleta && order.estado !== 'completado') {
+                fs.collection('Orden').doc(order.id).update({ estado: 'completado' })
+                    .then(() => {
+                        console.log('Orden marcada como completada:', order.id);
                     })
                     .catch(error => {
-                        console.error('Error al consultar el documento:', error);
+                        console.error('Error al marcar la orden como completada:', error);
                     });
             }
         });
@@ -89,7 +86,7 @@ const Orders = () => {
                                     <td style={{ border: '1px solid #ddd', padding: '8px' }}>{order.id}</td>
                                     <td style={{ border: '1px solid #ddd', padding: '8px' }}>{order.estado}</td>
                                     <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                                        {/* Mostrar la lista de productos de la orden */}
+                                      
                                         <table style={{ borderCollapse: 'collapse', width: '100%' }}>
                                             <thead>
                                                 <tr>
