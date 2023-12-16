@@ -50,6 +50,8 @@ export default function Navbar({user, prodTotal}) {
             <Link className='navlink' to='/'>
               Inicio
             </Link>
+
+            
           </div>
         </div>
        

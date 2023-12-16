@@ -47,10 +47,10 @@ const Inicio = () => {
 
         // Cambia la lógica para usar búsqueda o categoría
         if (busqueda) {
-            const normalizedQuery = busqueda.toLowerCase().trim();
+            const titleLower = busqueda.toLowerCase().trim();
 
-            productsRef = productsRef.where('title', '>=', normalizedQuery)
-                                    .where('title', '<=', normalizedQuery + '\uf8ff');
+            productsRef = productsRef.where('title_lower', '>=', titleLower)
+                                    .where('title_lower', '<=', titleLower + '\uf8ff');
         } else if (categoria) {
             productsRef = productsRef.where('category', '==', categoria);
         } else if (precioFiltro === 'mayor') {
@@ -184,12 +184,21 @@ return (
                     <span onClick={() => handleCategoria('carretera', 'Bicicletas de carretera')}>
                         Bicicleta de carretera
                     </span>
+                    <span onClick={() => handleCategoria('electricas', 'Bicicletas electricas')}>
+                        Bicicleta electrica
+                    </span>
+                    <span onClick={() => handleCategoria('infantil', 'Bicicleta infantil')}>
+                    Bicicleta infantil
+                    </span>
+                    <span onClick={() => handleCategoria('repuestos', 'Repuestos y accesorios')}>
+                    Repuestos y accesorios
+                    </span>
                     <br></br>
 
                     <div className="dropdown">
             <Dropdown as={ButtonGroup}>
                 <Button variant="secondary" id="dropdown-basic">
-                    {precioFiltro ? (precioFiltro === 'mayor' ? 'Mayor precio' : 'Menor precio') : 'Filtrar'}
+                    {precioFiltro ? (precioFiltro === 'mayor' ? 'Mayor precio' : 'Menor precio') : 'Filtrar por precio'}
                 </Button>
 
                 <Dropdown.Toggle split variant="secondary" id="dropdown-split-basic" />
@@ -209,7 +218,7 @@ return (
                     {products.length > 0 ? (
                         <Products products={products} addToCart={addToCart} user={user} />
                     ) : (
-                        <h1 className='text-center'>Cargando...</h1>
+                        <h1 className='text-center'>No hay productos!</h1>
                     )}
                 </div>
             </div>

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 export default function AddProduct() {
     const [title, setTitle] = useState('');
+    const [title_lower, setTitle_lower] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [image, setImage] = useState(null);
@@ -38,9 +39,11 @@ export default function AddProduct() {
                     .child(image.name)
                     .getDownloadURL()
                     .then(url => {
+                        const titleLower = title.toLowerCase();
                         fs.collection('Products')
                             .add({
                                 title,
+                                title_lower:titleLower,
                                 description,
                                 price,
                                 url,

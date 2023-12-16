@@ -52,6 +52,8 @@ export default function UpdateProduct() {
         const currentUser = auth.currentUser;
     
         if (currentUser) {
+          const titleLower = title.toLowerCase();
+
             if (image) {
                 storage
                     .ref(`product-images/${image.name}`)
@@ -67,6 +69,7 @@ export default function UpdateProduct() {
                             .doc(productId)
                             .update({
                                 title,
+                                title_lower: titleLower,
                                 description,
                                 price,
                                 url,
@@ -85,6 +88,7 @@ export default function UpdateProduct() {
                     .doc(productId)
                     .update({
                         title,
+                        title_lower: titleLower,
                         description,
                         price,
                         category,
