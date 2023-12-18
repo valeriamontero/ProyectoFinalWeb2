@@ -5,6 +5,8 @@ import Navbar from './Navbar'; // Asegúrate de importar tu componente de Navbar
 const VerOrden = () => {
     const [orders, setOrders] = useState([]);
     const [user, setUser] = useState(null);
+    const [cantidadTotal, setCantidadTotal] = useState(0);
+    const [precioTotal, setPrecioTotal] = useState(0);
 
     useEffect(() => {
         const uid = auth.currentUser.uid;
@@ -21,6 +23,26 @@ const VerOrden = () => {
     
         return () => unsubscribe();
     }, []);
+
+
+    const calcularEstadisticas = () => {
+        let totalCantidad = 0;
+        let totalPrecio = 0;
+
+        orders.forEach(order => {
+            order.productos.forEach(producto => {
+                totalCantidad += producto.cantidad;
+                totalPrecio += producto.cantidad * producto.precio;
+            });
+        });
+
+        setCantidadTotal(totalCantidad);
+        setPrecioTotal(totalPrecio);
+    };
+
+    useEffect(() => {
+        calcularEstadisticas();
+    }, [orders]);
     
 
 
@@ -63,53 +85,58 @@ const VerOrden = () => {
   
 
     return (
-      <div>
-          <Navbar user={user} />
-          <h1>Órdenes</h1>
-          {orders.length > 0 ? (
-              <table className="table table-bordered table-striped">
-                  <thead>
-                      <tr>
-                          <th>ID de Orden</th>
-                          <th>Fecha</th>
-                          <th>Estado</th>
-                          <th>Dirección de envío</th>
-                          <th>Productos</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      {orders.map(order => (
-                          <tr key={order.id}>
-                              <td>{order.id}</td>
-                              <td>{order.fecha}</td>
-                              <td>{order.estado}</td>
-                              <td>{order.Direccion}</td>
-                              <td>
-                                  <ul>
-                                      {order.productos.map(producto => (
-                                          <li key={producto.productoID}>
-                                              <span>{producto.nombre}</span> 
-                                              <select
-                                                  value={producto.estado}
-                                                  onChange={(e) => updateProductState(order.id, producto.productoID, e.target.value)}
-                                              >
-                                                  <option value="pendiente">Pendiente</option>
-                                                  <option value="enviado">Enviado</option>
-                                                 
-                                              </select>
-                                          </li>
-                                      ))}
-                                  </ul>
-                              </td>
-                          </tr>
-                      ))}
-                  </tbody>
-              </table>
-          ) : (
-              <p>No hay órdenes disponibles.</p>
-          )}
-      </div>
-  );
+        <div>
+            <Navbar user={user} />
+            <h1>Órdenes</h1>
+            {orders.length > 0 ? (
+                <div>
+                    
+                    <table className="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID de Orden</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th>Dirección de envío</th>
+                                <th>Productos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {orders.map(order => (
+                                <tr key={order.id}>
+                                    <td>{order.id}</td>
+                                    <td>{order.fecha}</td>
+                                    <td>{order.estado}</td>
+                                    <td>{order.Direccion}</td>
+                                    <td>
+                                        <ul>
+                                            {order.productos.map(producto => (
+                                                <li key={producto.productoID}>
+                                                    <span>{producto.nombre}</span> 
+                                                    <select
+                                                        value={producto.estado}
+                                                        onChange={(e) => updateProductState(order.id, producto.productoID, e.target.value)}
+                                                    >
+                                                        <option value="pendiente">Pendiente</option>
+                                                        <option value="enviado">Enviado</option>
+                                                    </select>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                
+                        <h2>Estadísticas de ventas</h2>
+                    <p>Cantidad total vendida: {cantidadTotal}</p>
+                    <p>Precio total vendido: {precioTotal}</p>    </table>
+                </div>
+            ) : (
+                <p>No hay órdenes disponibles.</p>
+            )}
+        </div>
+    );
 };
 
 export default VerOrden;

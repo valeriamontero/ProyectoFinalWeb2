@@ -296,6 +296,7 @@ const handleToken = async (token) => {
                     <h5>Cart Summary</h5>
                     <br></br>
                     <div>Cantidad total de productos: <span>{cantidadTotal}</span></div>
+                    <div>Subtotal:  <span>$ {precioTotal}</span></div>
                     <div>Cargos de envio:  <span>$ {envio}</span></div>
                     <div>IVA: <span>$ {iva}</span></div>
                     <div>Precio total a pagar: <span>$ {precioTotalIva}</span></div>

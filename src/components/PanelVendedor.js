@@ -8,8 +8,6 @@ export default function PanelVendedor() {
     const [user, setUser] = useState(null);
     const [userProducts, setUserProducts] = useState([]);
     const [selectedProductId, setSelectedProductId] = useState(null);
-    const [cantidadTotal, setCantidadTotal] = useState(0);
-    const [precioTotal, setPrecioTotal] = useState(0);
     const history = useNavigate();
 
     useEffect(() => {
@@ -58,7 +56,7 @@ export default function PanelVendedor() {
         if (selectedProductId) {
             history(`/modificar/${selectedProductId}`);
         } else {
-            Swal.fire('Error', 'Debe seleccionar un producto para modificarlo', 'error');
+            Swal('Error', 'Debe seleccionar un producto para modificarlo', 'error')
         }
     }
 
@@ -70,7 +68,7 @@ export default function PanelVendedor() {
                 .then(() => {
                     // Eliminación exitosa, ahora actualizamos la lista de productos
                     const updatedProducts = userProducts.filter(product => product.id !== selectedProductId);
-                    setUserProducts(updatedProducts); 
+                    setUserProducts(updatedProducts); // Actualizar el estado local
                     setSelectedProductId(null);
                     Swal.fire('Éxito', 'Producto eliminado exitosamente', 'success');
                 })
@@ -112,12 +110,10 @@ export default function PanelVendedor() {
                             <th>ID del producto</th>
                             <th>Título</th>
                             <th>Precio</th>
-                            
                             <th>Categoría</th>
                             <th>Descripción</th>
                             <th>Codigo de usuario vendedor</th>
                             <th>Imagen</th>
-                            <th>Cantidad en stock</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -132,30 +128,11 @@ export default function PanelVendedor() {
                                 <td>
                                     <img src={product.url} alt={product.title} style={{ maxWidth: '100px' }} />
                                 </td>
-                                <td>{product.cantidad}</td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-
-                            <br></br>
-                {user && user.Rol === 'Vendedor' && (
-                <div>
-                    <h2>Estadísticas de ventas</h2>
-                    <br></br>
-                    <p>Cantidad total vendida: {cantidadTotal}</p>
-                    <p>Precio total vendido: {precioTotal}</p>
-                </div>
-            )}
             </div>
-    
-
-
-
-          
-       
-    
-
         </div>
     );
 }
