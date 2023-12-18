@@ -27,7 +27,7 @@ export default function UpdateProduct() {
                     setDescription(productData.description);
                     setPrice(productData.price);
                     setCategory(productData.category);
-                    setCantidad(productData.availability || ''); 
+                    setCantidad(productData.cantidad || ''); 
                 } else {
                     console.log('No product found');
                 }
