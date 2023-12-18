@@ -47,6 +47,16 @@ export default function IndivProduct({ individualProduct, addToCart, user }) {
         }
     };
 
+
+
+    const [stockDisponible, setStockDisponible] = useState(true);
+
+    useEffect(() => {
+        if (individualProduct.cantidad === 0) {
+            setStockDisponible(false); 
+        }
+    }, [individualProduct.cantidad]);
+
     return (
         <div className='product'>
             <div className='product-img'>
@@ -57,9 +67,14 @@ export default function IndivProduct({ individualProduct, addToCart, user }) {
             <div className='product-text description'>{individualProduct.description}</div>
             <div className='product-text price'>${individualProduct.price}</div>
 
-            {!vendedor && (
+            {!vendedor && stockDisponible && (
                 <div className='btn btn-danger btn-md cart-btn' onClick={handleCarrito}>
                     Añadir al carrito
+                </div>
+            )}
+            {!vendedor && !stockDisponible && (
+                <div className='btn btn-secondary btn-md cart-btn' disabled>
+                    Fuera de stock!
                 </div>
             )}
             <br />

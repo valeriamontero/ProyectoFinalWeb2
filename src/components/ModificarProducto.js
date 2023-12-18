@@ -9,6 +9,7 @@ export default function UpdateProduct() {
     const [price, setPrice] = useState('');
     const [image, setImage] = useState(null);
     const [category, setCategory] = useState('');
+    const [cantidad, setCantidad] = useState(''); 
     const [successMsg, setSuccessMsg] = useState('');
     const [uploadError, setUploadError] = useState('');
     const [imageError, setImageError] = useState('');
@@ -26,7 +27,7 @@ export default function UpdateProduct() {
                     setDescription(productData.description);
                     setPrice(productData.price);
                     setCategory(productData.category);
-             
+                    setCantidad(productData.availability || ''); 
                 } else {
                     console.log('No product found');
                 }
@@ -50,9 +51,9 @@ export default function UpdateProduct() {
     const handleUpdateProduct = (e) => {
         e.preventDefault();
         const currentUser = auth.currentUser;
-    
+
         if (currentUser) {
-          const titleLower = title.toLowerCase();
+            const titleLower = title.toLowerCase();
 
             if (image) {
                 storage
@@ -74,6 +75,7 @@ export default function UpdateProduct() {
                                 price,
                                 url,
                                 category,
+                                cantidad,
                                 addedBy: currentUser.uid,
                             });
                     })
@@ -92,6 +94,7 @@ export default function UpdateProduct() {
                         description,
                         price,
                         category,
+                        cantidad, 
                         addedBy: currentUser.uid,
                     })
                     .then(() => {
@@ -105,80 +108,91 @@ export default function UpdateProduct() {
             setUploadError('User not authenticated');
         }
     };
-    
 
     return (
         <div className='container'>
-          <h1>Update Product</h1>
-          {uploadError && (
-            <div className='error-msg'>{uploadError}</div>
-          )}
-          {successMsg && (
-            <div className='success-msg'>{successMsg}</div>
-          )}
-          <form autoComplete='off' className='form-group' onSubmit={handleUpdateProduct}>
-            <label>Product Title</label>
-            <input
-              type='text'
-              className='form-control'
-              required
-              onChange={(e) => setTitle(e.target.value)}
-              value={title}
-            />
-            <br />
-            <label>Product Description</label>
-            <input
-              type='text'
-              className='form-control'
-              required
-              onChange={(e) => setDescription(e.target.value)}
-              value={description}
-            />
-            <br />
-            <label>Product Price</label>
-            <input
-              type='number'
-              className='form-control'
-              required
-              onChange={(e) => setPrice(e.target.value)}
-              value={price}
-            />
-            <br />
-            <label>Upload Product Image</label>
-            <input
-              type='file'
-              id='file'
-              className='form-control'
-             
-              onChange={handleProductImg}
-            />
-            <br />
-            <label>Product Category</label>
-            <select
-              className='form-control'
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value=''>Select a category</option>
-              <option value='mountain'>Mountain Bike</option>
-              <option value='road'>Road Bike</option>
-              <option value='urban'>Urban Bike</option>
-            </select>
-            <br />
-            {imageError && (
-              <div className='error-msg'>{imageError}</div>
+            <h1>Update Product</h1>
+            {uploadError && (
+                <div className='error-msg'>{uploadError}</div>
             )}
-            <br />
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Link to='/panel-vendedor' className='btn btn-success btn-md'>
-                Back
-              </Link>
-              <button type='submit' className='btn btn-success btn-md'>
-                UPDATE
-              </button>
-            </div>
-          </form>
+            {successMsg && (
+                <div className='success-msg'>{successMsg}</div>
+            )}
+            <form autoComplete='off' className='form-group' onSubmit={handleUpdateProduct}>
+                <label>Product Title</label>
+                <input
+                    type='text'
+                    className='form-control'
+                    required
+                    onChange={(e) => setTitle(e.target.value)}
+                    value={title}
+                />
+                <br />
+                <label>Product Description</label>
+                <input
+                    type='text'
+                    className='form-control'
+                    required
+                    onChange={(e) => setDescription(e.target.value)}
+                    value={description}
+                />
+                <br />
+                <label>Product Price</label>
+                <input
+                    type='number'
+                    className='form-control'
+                    required
+                    onChange={(e) => setPrice(e.target.value)}
+                    value={price}
+                />
+                <br />
+                <label>Upload Product Image</label>
+                <input
+                    type='file'
+                    id='file'
+                    className='form-control'
+                    onChange={handleProductImg}
+                />
+                <br />
+                <label>Product Availability</label>
+                <input
+                    type='number'
+                    className='form-control'
+                    required
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === '' || /^[1-9]\d*$/.test(value)) {
+                            setCantidad(value);
+                        }
+                    }}
+                    value={cantidad}
+                />
+                <br />
+                <label>Product Category</label>
+                <select
+                    className='form-control'
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                >
+                    <option value=''>Select a category</option>
+                    <option value='mountain'>Mountain Bike</option>
+                    <option value='road'>Road Bike</option>
+                    <option value='urban'>Urban Bike</option>
+                </select>
+                <br />
+                {imageError && (
+                    <div className='error-msg'>{imageError}</div>
+                )}
+                <br />
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Link to='/panel-vendedor' className='btn btn-success btn-md'>
+                        Back
+                    </Link>
+                    <button type='submit' className='btn btn-success btn-md'>
+                        UPDATE
+                    </button>
+                </div>
+            </form>
         </div>
-      )
-            }
-      
+    );
+}

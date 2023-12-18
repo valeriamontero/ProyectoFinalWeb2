@@ -26,7 +26,7 @@ app.post('/pago', async (req, res) => {
         });
         const key = uuidv4();
         const cargo = await stripe.charges.create({
-            amount: carrito.precioTotal * 100,
+            amount: carrito.precioTotalIva * 100,
             currency: 'usd',
             customer: customer.id,
             receipt_email: token.email,

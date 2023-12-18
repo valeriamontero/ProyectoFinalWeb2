@@ -80,29 +80,60 @@ const cantidadTotal = cantidad.reduce(arraysCantidad, 0);
 
  const arraysPrecio = (param1, param2) => param1 + param2;
  const precioTotal = precio.reduce(arraysPrecio, 0);
-console.log(precioTotal);
+ const envio = 20;
+ const precioTotalEnvio = precioTotal + envio;
+ const iva = precioTotalEnvio * 0.13;
+ const precioTotalIva = precioTotalEnvio + iva;
+
 
  
 
     //Subir Producto
     let Producto;
-    const SubirProducto=(carritoProductos)=>{
-        //console.log(carritoProductos)
-        Producto=carritoProductos;
-        Producto.cantidad=Producto.cantidad+1;
-        Producto.total=Producto.cantidad*Producto.price;
-        //actualizar firebase
-        auth.onAuthStateChanged(user=>{
-            if(user){
-                fs.collection('Carrito '+user.uid).doc(carritoProductos.ID).update(Producto).then(()=>{
-                    console.log("Incrementado exitoso");
-                })
+    const SubirProducto = (carritoProducto) => {
+        // Obtener referencia al documento del producto en Firestore
+        const productoRef = fs.collection('Products').doc(carritoProducto.ID);
+    
+        // Obtener el stock actual del producto
+        productoRef.get().then((doc) => {
+            if (doc.exists) {
+                const productoData = doc.data();
+                const stockDisponible = productoData.cantidad;
+    
+              
+                if (carritoProducto.cantidad + 1 <= stockDisponible) {
+                    const nuevaCantidad = carritoProducto.cantidad + 1;
+                    const nuevoTotal = nuevaCantidad * carritoProducto.price;
+    
+                    auth.onAuthStateChanged(user => {
+                        if (user) {
+                            fs.collection('Carrito ' + user.uid).doc(carritoProducto.ID).update({
+                                cantidad: nuevaCantidad,
+                                total: nuevoTotal
+                            }).then(() => {
+                                console.log("Incremento exitoso");
+                            }).catch((error) => {
+                                console.error("Error al actualizar el carrito:", error);
+                            });
+                        } else {
+                            console.log("No hay usuario");
+                        }
+                    });
+                } else {
+                    Swal.fire({ 
+                        title: "¡Error!",
+                        text: "No hay suficiente stock para este producto.",
+                        icon: "error"
+                    });
+                    
+                }
+            } else {
+                console.log("El producto no existe en la base de datos");
             }
-            else{
-                console.log("No hay usuario")
-            }
-        })
-    }
+        }).catch((error) => {
+            console.error("Error al obtener el producto:", error);
+        });
+    };
 
     //bajar producto
 
@@ -149,7 +180,7 @@ useEffect(() => {
 //PAGOS      Tarjeta de prueba. Numero: 4242 4242 4242 4242. Fecha: la fecha actual. CVC: 242. 
 
 const handleToken = async (token) => {
-    const carrito = { name: 'Todos los productos', precioTotal };
+    const carrito = { name: 'Todos los productos', precioTotalIva };
     const response = await axios.post('http://localhost:8080/pago', {
         token,
         carrito
@@ -181,6 +212,24 @@ const handleToken = async (token) => {
                 };
     
                 productosOrden.push(productoOrden);
+
+                const productoRef = fs.collection('Products').doc(carritoProducto.ID);
+                await fs.runTransaction(async (transaction) => {
+                    const doc = await transaction.get(productoRef);
+                    if (!doc.exists) {
+                        throw new Error('Producto no encontrado en la base de datos.');
+                    }
+
+                    const productoData = doc.data();
+                    const stockActual = productoData.cantidad;
+                    const cantidadVendida = carritoProducto.cantidad;
+
+                    if (cantidadVendida > stockActual) {
+                        throw new Error('Cantidad vendida mayor que el stock disponible.');
+                    }
+
+                    transaction.update(productoRef, { cantidad: stockActual - cantidadVendida });
+                });
     
                 // Elimina el producto del carrito
                 await fs.collection('Carrito ' + uid).doc(snap.id).delete();
@@ -206,8 +255,13 @@ const handleToken = async (token) => {
                 icon: "success"
             });
         } catch (error) {
+            Swal.fire({
+                title: "¡Error!",
+                text: "No se pudo completar la orden.",
+                icon: "error"
+            });
             console.error('Error:', error);
-            // Manejar errores si ocurre alguno durante el proceso
+            
         }
     }
     
@@ -240,8 +294,10 @@ const handleToken = async (token) => {
                 <div className='summary-box'>
                     <h5>Cart Summary</h5>
                     <br></br>
-                    <div>Total No of Products: <span>{cantidadTotal}</span></div>
-                    <div>Total Price to Pay: <span>$ {precioTotal}</span></div>
+                    <div>Cantidad total de productos: <span>{cantidadTotal}</span></div>
+                    <div>Cargos de envio:  <span>$ {envio}</span></div>
+                    <div>IVA: <span>$ {iva}</span></div>
+                    <div>Precio total a pagar: <span>$ {precioTotalIva}</span></div>
                     <br></br>
                     <StripeCheckout
                     stripeKey = 'pk_test_51OMbT7D66JOqoGT6gEz3eMg7LWd83tmc2se4fGbODITgoy2OUblhQNki1Yqd0KuECSaimWvsLfisOrWvqRLvSC8900cEPG6Vc3'
@@ -249,7 +305,7 @@ const handleToken = async (token) => {
                     billingAddress
                     shippingAddress
                     name = 'All Products'
-                    amount = {precioTotal * 100}
+                    amount = {precioTotalIva * 100}
 
                         
                     ></StripeCheckout>
