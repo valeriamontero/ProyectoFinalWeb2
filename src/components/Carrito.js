@@ -82,8 +82,9 @@ const cantidadTotal = cantidad.reduce(arraysCantidad, 0);
  const precioTotal = precio.reduce(arraysPrecio, 0);
  const envio = 20;
  const precioTotalEnvio = precioTotal + envio;
- const iva = precioTotalEnvio * 0.13;
+ const iva = Math.round(precioTotalEnvio * 0.13);
  const precioTotalIva = precioTotalEnvio + iva;
+ 
 
 
  

@@ -22,14 +22,14 @@ export default function Signup(){
     const handleLogin=(e)=>{
         e.preventDefault()
         auth.signInWithEmailAndPassword(email,password).then(()=>{
-            setExito('Inicio de Sesion Exitoso. Serás redirigido a la página de inicio en 3 segundos')
+            setExito('Inicio de Sesion Exitoso. Serás redirigido a la página de inicio')
             setEmail('')
             setPassword('')
             setError('')
             setTimeout(()=>{
                 setExito('')
                 history('/')
-            },3000)
+            },1000)
         }).catch((error=>setError(error.message)))
        
     };
