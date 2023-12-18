@@ -114,6 +114,7 @@ export default function PanelVendedor() {
                             <th>Descripción</th>
                             <th>Codigo de usuario vendedor</th>
                             <th>Imagen</th>
+                            <th>Cantidad en stock</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -128,6 +129,7 @@ export default function PanelVendedor() {
                                 <td>
                                     <img src={product.url} alt={product.title} style={{ maxWidth: '100px' }} />
                                 </td>
+                                <td>{product.cantidad}</td>
                             </tr>
                         ))}
                     </tbody>
