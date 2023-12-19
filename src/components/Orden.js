@@ -52,8 +52,12 @@ const Orders = () => {
     }, []);
 
     useEffect(() => {
-        orders.forEach(order => {
-            const ordenCompleta = order.productos.every(producto => producto.estado === 'enviado');
+        orders.forEach(async (order) => {
+            const productosSnapshot = await fs.collection('Orden').doc(order.id).collection('productos').get();
+            const productos = productosSnapshot.docs.map((doc) => doc.data());
+    
+            const ordenCompleta = productos.every((producto) => producto.estado === 'enviado');
+    
             if (ordenCompleta && order.estado !== 'completado') {
                 fs.collection('Orden').doc(order.id).update({ estado: 'completado' })
                     .then(() => {

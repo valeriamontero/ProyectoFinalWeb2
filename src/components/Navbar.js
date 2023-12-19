@@ -5,7 +5,7 @@ import { Icon } from 'react-icons-kit';
 import { shoppingCart } from 'react-icons-kit/fa/shoppingCart';
 import {auth} from '../Config/Config'
 import { useNavigate } from 'react-router-dom';
-import {Swal} from 'sweetalert2';
+import Swal from 'sweetalert2';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { fs } from '../Config/Config';
@@ -21,6 +21,12 @@ export default function Navbar({user, prodTotal}) {
         auth.signOut().then(()=>{
             console.log('Ha cerrado sesion');
             navigate('/login');
+            Swal.fire ({
+                icon: 'success',
+                title: 'Ha cerrado sesion',
+                showConfirmButton: false,
+                timer: 1000,
+            })
         })
     }
 
