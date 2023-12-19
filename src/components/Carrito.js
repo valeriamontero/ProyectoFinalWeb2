@@ -178,6 +178,35 @@ useEffect(() => {
 }, []);
 
 
+
+//Direcciones de envio
+
+const [direccionEnvio, setDireccionEnvio] = useState('');
+
+const handleDireccionEnvioChange = (event) => {
+    setDireccionEnvio(event.target.value);
+};
+
+
+const handleUseProfileAddress = () => {
+    if (user && user.Direccion) {
+        setDireccionEnvio(user.Direccion);
+    } else {
+        Swal.fire({
+            title: '¡Error!',
+            text: 'No se encontró una dirección en el perfil del usuario.',
+            icon: 'error',
+        });
+    }
+};
+
+useEffect(() => {
+    if (user && user.Direccion) {
+        setDireccionEnvio(user.Direccion);
+    }
+}, [user]);
+
+
 //PAGOS      Tarjeta de prueba. Numero: 4242 4242 4242 4242. Fecha: la fecha actual. CVC: 242. 
 
 const handleToken = async (token) => {
@@ -241,7 +270,7 @@ const handleToken = async (token) => {
             // Guarda todos los productos en la nueva orden
             await nuevaOrdenRef.set({
                 compradorID: uid,
-                Direccion: user.Direccion,
+                Direccion: direccionEnvio,
                 productos: productosOrden,
                 estado: 'pendiente',
                 fecha: fechaActual,
@@ -284,7 +313,7 @@ const handleToken = async (token) => {
 
         {carritoProductos.length > 0 ? (
             <div className='container-fluid'>
-                <h1 className='text-center'>Carrito de compras</h1>
+             
                 <div className='products-box'>
                     <CarritoProductos
                         carritoProductos={carritoProductos}
@@ -292,8 +321,24 @@ const handleToken = async (token) => {
                         BajarProducto={BajarProducto}
                     />
                 </div>
+
+                <div className='text-center'>
+            <label htmlFor='direccionEnvio'>Dirección de Envío:</label>
+                 <input
+                type='text'
+                id='direccionEnvio'
+                value={direccionEnvio}
+                onChange={handleDireccionEnvioChange}
+                placeholder='Ingrese su dirección'
+                  />
+                  </div>
+
+                
+        
+
+
                 <div className='summary-box'>
-                    <h5>Cart Summary</h5>
+                    <h5>Resumen de la compra</h5>
                     <br></br>
                     <div>Cantidad total de productos: <span>{cantidadTotal}</span></div>
                     <div>Subtotal:  <span>$ {precioTotal}</span></div>

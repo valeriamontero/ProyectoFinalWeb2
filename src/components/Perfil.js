@@ -7,15 +7,16 @@ export default function Perfil() {
     const [user, setUser] = useState(null);
     const currentUser = auth.currentUser;
     const history = useNavigate();
+    const [nuevaDireccion, setNuevaDireccion] = useState('');
 
     const cargarUsuario = () => {
         if (currentUser) {
-            console.log("currentUser.uid:", currentUser.uid); // Verifica si currentUser.uid tiene un valor
+            console.log("currentUser.uid:", currentUser.uid);
             fs.collection('users').doc(currentUser.uid).get()
                 .then((doc) => {
                     if (doc.exists) {
                         const userData = doc.data();
-                        userData.id = doc.id; // Asignar el ID del documento como el ID del usuario
+                        userData.id = doc.id;
                         setUser(userData);
                     } else {
                         console.log('No se encontró el documento!');
@@ -28,20 +29,39 @@ export default function Perfil() {
             console.log("No hay un usuario actualmente autenticado.");
         }
     };
-    
-    
+
     useEffect(() => {
         cargarUsuario();
     }, []);
 
-    const updateProfileClick = () => {
-        console.log('Actualizar perfil');
+    const handleDireccionClick = () => {
+        // Mostrar campo de edición de dirección al hacer clic
+        setNuevaDireccion(user.Direccion);
+    };
+
+    const handleDireccionChange = (event) => {
+        setNuevaDireccion(event.target.value);
+    };
+
+    const actualizarDireccion = () => {
+        if (currentUser) {
+            fs.collection('users').doc(currentUser.uid).update({
+                Direccion: nuevaDireccion,
+            })
+            .then(() => {
+                console.log('Dirección actualizada correctamente.');
+                setUser(prevUser => ({ ...prevUser, Direccion: nuevaDireccion }));
+                setNuevaDireccion('');
+            })
+            .catch((error) => {
+                console.error('Error al actualizar la dirección:', error);
+            });
+        }
     };
 
     const HandlerVolver = () => {
         history('/');
     }
-
 
     return (
         <Card className='mt-2 border-0 rounded-0 shadow-sm'>
@@ -71,7 +91,21 @@ export default function Perfil() {
                                 </tr>
                                 <tr>
                                     <td>Direccion</td>
-                                    <td>{user.Direccion}</td>
+                                    <td>
+                                        <div onClick={handleDireccionClick}>
+                                            {user.Direccion}
+                                        </div>
+                                        <input
+                                            type='text'
+                                            value={nuevaDireccion}
+                                            onChange={handleDireccionChange}
+                                            placeholder='Ingrese una nueva dirección'
+                                            style={{ display: nuevaDireccion ? 'block' : 'none' }}
+                                        />
+                                        {nuevaDireccion && (
+                                            <button onClick={actualizarDireccion}>Actualizar dirección</button>
+                                        )}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Telefono</td>
@@ -85,7 +119,7 @@ export default function Perfil() {
                         </Table>
                         {currentUser ? (currentUser.uid === user?.id) ? (
                             <CardFooter className='text-center'>
-                                <Button color='warning' onClick={HandlerVolver}>Volver a la pagina principal</Button>
+                                <Button color='warning' onClick={HandlerVolver}>Volver a la página principal</Button>
                             </CardFooter>
                         ) : null : null}
                     </Container>
@@ -95,4 +129,5 @@ export default function Perfil() {
             </CardBody>
         </Card>
     );
+    
 }

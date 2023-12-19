@@ -127,6 +127,7 @@ const VerOrden = () => {
                                 </tr>
                             ))}
                         </tbody>
+                        <br></br>
                 
                         <h2>Estadísticas de ventas</h2>
                     <p>Cantidad total vendida: {cantidadTotal}</p>
