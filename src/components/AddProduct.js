@@ -41,12 +41,13 @@ export default function AddProduct() {
                     .getDownloadURL()
                     .then(url => {
                         const titleLower = title.toLowerCase();
+                        const priceNumero = Number(price);
                         fs.collection('Products')
                             .add({
                                 title,
                                 title_lower: titleLower,
                                 description,
-                                price,
+                                price: priceNumero,
                                 url,
                                 category,
                                 cantidad, 

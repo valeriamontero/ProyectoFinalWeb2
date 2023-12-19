@@ -5,11 +5,14 @@ import { auth, fs } from '../Config/Config';
 import {Swal} from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { Dropdown, ButtonGroup, Button } from 'react-bootstrap';
+import Footer from './Footer';
 
 
 const Inicio = () => {
     const [user, setUser] = useState(null);
     const history = useNavigate();
+    const [precioMinimo, setPrecioMinimo] = useState('');
+    const [precioMaximo, setPrecioMaximo] = useState('');
     
 
 
@@ -42,59 +45,59 @@ const Inicio = () => {
     const [precioFiltro, setPrecioFiltro] = useState(null);
 
     const getProducts = async () => {
-    try {
-        let productsRef = fs.collection('Products');
+        try {
+            let productsRef = fs.collection('Products');
+    
 
-        // Cambia la lógica para usar búsqueda o categoría
-        if (busqueda) {
-            const titleLower = busqueda.toLowerCase().trim();
-
-            productsRef = productsRef.where('title_lower', '>=', titleLower)
-                                    .where('title_lower', '<=', titleLower + '\uf8ff');
-        } else if (categoria) {
-            productsRef = productsRef.where('category', '==', categoria);
-        } else if (precioFiltro === 'mayor') {
-            // Ordenar por precio de mayor a menor
-            productsRef = productsRef.orderBy('price', 'desc'); 
-        } else if (precioFiltro === 'menor') {
-            // Ordenar por precio de menor a mayor
-            productsRef = productsRef.orderBy('price', 'asc'); 
+            if (busqueda) {
+                const titleLower = busqueda.toLowerCase().trim();
+                productsRef = productsRef.where('title_lower', '>=', titleLower)
+                    .where('title_lower', '<=', titleLower + '\uf8ff');
+            }
+            if (categoria) {
+                productsRef = productsRef.where('category', '==', categoria);
+            }
+    
+            let filteredProducts = await productsRef.get();
+    
+            // Si hay filtros de precio, aplicarlos a la colección filtrada actual
+            if (precioMinimo !== '' && precioMaximo !== '') {
+                filteredProducts = filteredProducts.docs.filter(doc => {
+                    const price = parseFloat(doc.data().price);
+                    return price >= parseFloat(precioMinimo) && price <= parseFloat(precioMaximo);
+                });
+            }
+    
+            const formattedProducts = filteredProducts.map(doc => {
+                const data = doc.data();
+                data.ID = doc.id;
+                data.image = data.url;
+                return data;
+            });
+    
+            setProducts(formattedProducts);
+        } catch (error) {
+            console.error('Error getting products: ', error);
         }
+    };
 
-        const productsSnapshot = await productsRef.get();
-        const filteredProducts = [];
 
-        productsSnapshot.forEach((doc) => {
-            const data = doc.data();
-            data.ID = doc.id;
-            data.image = data.url;
-            filteredProducts.push(data);
-        });
-
-        setProducts(filteredProducts);
-    } catch (error) {
-        console.error('Error getting products: ', error);
-    }
-};
-
-useEffect(() => {
-    getProducts();
-}, [busqueda, categoria, precioFiltro]);
 
 
     const handleCategoria = (selectedCategory, categoriaNombre) => {
         setCategoria(selectedCategory);
-        setCategoriaNombre(categoriaNombre || 'Todos los productos'); 
-        setBusqueda(''); // Limpiar la búsqueda al seleccionar una categoría
+        setCategoriaNombre(categoriaNombre || 'Todos los productos');
+        setBusqueda('');
     };
 
-    const handleMayor = () => {
-        setPrecioFiltro('mayor'); // Marca para filtrar por mayor precio
+    const handleFiltrarPorRango = (min, max) => {
+        setPrecioMinimo(min);
+        setPrecioMaximo(max);
     };
 
-    const handleMenor = () => {
-        setPrecioFiltro('menor'); // Marca para filtrar por menor precio
-    };
+    useEffect(() => {
+        getProducts();
+    }, [busqueda, categoria, precioMinimo, precioMaximo]);
     
    /**************************************************************** */
 
@@ -195,20 +198,40 @@ return (
                     </span>
                     <br></br>
 
-                    <div className="dropdown">
-            <Dropdown as={ButtonGroup}>
-                <Button variant="secondary" id="dropdown-basic">
-                    {precioFiltro ? (precioFiltro === 'mayor' ? 'Mayor precio' : 'Menor precio') : 'Filtrar por precio'}
-                </Button>
+                    <h6>Filtrar por rango de precios</h6>
+                    <div className="form-check">
+                    <input className="form-check-input" type="radio" name="precioRadio" id="todosPrecios" onClick={() => handleFiltrarPorRango('0', '1000000')}/>
+                    <label className="form-check-label" htmlFor="todosPrecios">
+                    Todos los precios </label></div>
 
-                <Dropdown.Toggle split variant="secondary" id="dropdown-split-basic" />
+                    <div className="form-check">
+                    <input className="form-check-input" type="radio" name="precioRadio" id="rango1" onClick={() => handleFiltrarPorRango('1', '100')}/>
+                    <label className="form-check-label" htmlFor="rango1">
+                    $1 - $100 </label></div>
 
-                <Dropdown.Menu>
-                    <Dropdown.Item onClick={handleMayor}>Mayor a menor</Dropdown.Item>
-                    <Dropdown.Item onClick={handleMenor}>Menor a mayor</Dropdown.Item>
-                </Dropdown.Menu>
-            </Dropdown>
-        </div>
+                    <div className="form-check">
+                    <input className="form-check-input" type="radio" name="precioRadio" id="rango2" onClick={() => handleFiltrarPorRango('100', '500')}/>
+                    <label className="form-check-label" htmlFor="rango2">
+                    $100 - $500  </label></div>
+
+                    <div className="form-check">
+                    <input className="form-check-input" type="radio" name="precioRadio" id="rango3" onClick={() => handleFiltrarPorRango('500', '1000')}/>
+                    <label className="form-check-label" htmlFor="rango3">
+                    $500 - $1000 </label></div>
+
+                    <div className="form-check">
+                    <input className="form-check-input" type="radio" name="precioRadio" id="rango4" onClick={() => handleFiltrarPorRango('1000', '5000')}/>
+                    <label className="form-check-label" htmlFor="rango4">
+                    $1000 - $5000 </label></div>
+
+                    <div className="form-check">
+                    <input className="form-check-input" type="radio" name="precioRadio" id="rango5" onClick={() => handleFiltrarPorRango('5000', '1000000000')}/>
+                    <label className="form-check-label" htmlFor="rango5">
+                    $5000+ </label></div>
+
+                 
+
+        
                     
                 </div>
             </div>
@@ -223,6 +246,7 @@ return (
                 </div>
             </div>
         </div>
+        <Footer />
     </>
 
     

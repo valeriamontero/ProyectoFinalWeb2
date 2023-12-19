@@ -66,13 +66,14 @@ export default function UpdateProduct() {
                             .getDownloadURL();
                     })
                     .then((url) => {
+                        const priceNumero = Number(price);
                         return fs.collection('Products')
                             .doc(productId)
                             .update({
                                 title,
                                 title_lower: titleLower,
                                 description,
-                                price,
+                                price: priceNumero,
                                 url,
                                 category,
                                 cantidad,
@@ -139,12 +140,12 @@ export default function UpdateProduct() {
                 <br />
                 <label>Product Price</label>
                 <input
-                    type='number'
-                    className='form-control'
-                    required
-                    onChange={(e) => setPrice(e.target.value)}
-                    value={price}
-                />
+                type='number'
+                className='form-control'
+                required
+                onChange={(e) => setPrice(parseFloat(e.target.value))}
+                value={price}
+                 />
                 <br />
                 <label>Upload Product Image</label>
                 <input

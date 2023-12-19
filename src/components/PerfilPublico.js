@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import {auth, fs } from '../Config/Config';
 import { Button, Card, CardBody, CardFooter, Container, Table } from 'reactstrap';
 import { useParams } from 'react-router-dom';
-import {doc, updateDoc, getFirestore, arrayUnion } from 'firebase/firestore';
 
 
 export default function PerfilPublico() {
@@ -12,10 +11,9 @@ export default function PerfilPublico() {
     const navigate = useNavigate();
     const [calificado, setCalificado] = useState(false);
     const currentUser = auth.currentUser;
-    const [newCalificacion, setNewCalificacion] = useState(0);
     const [selectedRating, setSelectedRating] = useState(0);
+    const [vendedor, setVendedor] = useState(false);
 
-    // Obtener la calificación del usuario actual del localStorage al cargar el componente
     useEffect(() => {
         const savedCalificacion = localStorage.getItem(`calificacion_${userId}`);
         if (savedCalificacion) {
@@ -39,7 +37,33 @@ export default function PerfilPublico() {
                     console.log('Error al obtener el documento:', error);
                 });
         }
-    }, [userId]);
+
+        if (currentUser) {
+            fs.collection('users')
+                .doc(currentUser.uid)
+                .get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const userData = doc.data();
+                        const userRole = userData.Rol; // Asegúrate de obtener el campo correcto del rol
+                        const vendedor = userRole === 'Vendedor';
+                        setVendedor(vendedor);
+                        console.log('¿Es el usuario autenticado un vendedor?', vendedor);
+                    } else {
+                        console.log('No se encontró el documento del usuario');
+                    }
+                })
+                .catch((error) => {
+                    console.log('Error al obtener el documento:', error);
+                });
+        }
+        
+        // Cuando no hay usuario autenticado, establecer vendedor en false
+        if (!currentUser) {
+            setVendedor(true);
+        }
+    }, [userId, currentUser]);
+
 
     const handlerVolver = () => {
         navigate('/');
@@ -76,7 +100,8 @@ export default function PerfilPublico() {
     };
     
     const renderCalificacionButton = (value) => {
-        const hasRated = user && user.calificaciones && user.calificaciones.some(calif => calif.userId === currentUser.uid);
+        const hasRated = user && user.calificaciones && currentUser && user.calificaciones.some(calif => calif.userId === currentUser.uid);
+
 
         return (
             <Button
@@ -103,7 +128,7 @@ const calcularPromedioCalificacion = () => {
 
 
 
-const vendedor = user && user.rol === 'vendedor';
+
   
 
 
@@ -147,7 +172,7 @@ const vendedor = user && user.rol === 'vendedor';
                                     <td>Calificación</td>
                                     <td>{calcularPromedioCalificacion()} de 5</td>
                                 </tr>
-                                {vendedor && ( 
+                                {user && !vendedor &&  ( 
                                 <tr>
                                     <td>Calificar</td>
                                     <td>
