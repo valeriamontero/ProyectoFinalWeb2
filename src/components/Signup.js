@@ -2,6 +2,7 @@ import React,{useState} from "react"
 import { useNavigate } from 'react-router-dom';
 import { auth, fs } from '../Config/Config';
 import {Link} from 'react-router-dom'
+import Swal from 'sweetalert2';
 
 export default function Signup() {
     const history = useNavigate();
@@ -19,9 +20,14 @@ export default function Signup() {
     //menu desplegable
     const [activo, setActivo] = useState(false);
     const [tipoCuenta, setTipoCuenta] = useState('');
+    
 
     const handleSignup = (e) => {
         e.preventDefault();
+        if (rol === '') {
+            Swal.fire ('Error', 'Debe seleccionar un tipo de cuenta', 'error')
+            return; 
+        }
         auth.createUserWithEmailAndPassword(email, password).then((credentials) => {
             fs.collection('users').doc(credentials.user.uid).set({
                 Nombre: nombre,
@@ -73,7 +79,9 @@ export default function Signup() {
                 <input type='text' className='form-control' placeholder='Nombre Completo' required onChange={(e)=>setNombre(e.target.value)} value={nombre}></input>
                 <br/><br/>
                 <label>Telefono</label>
-                <input type='text' className='form-control' placeholder='Telefono' required onChange={(e)=>setTelefono(e.target.value)} value={telefono}></input>
+                <input type='text' className='form-control'  placeholder='Telefono'  maxLength={8} required onChange={(e)=> {const re = /^[0-9\b]+$/; 
+                if (e.target.value === '' || re.test(e.target.value)) {setTelefono(e.target.value);}}} value={telefono} 
+                />
                 <br/><br/>
                 <label>Direccion</label>
                 <input type='text' className='form-control' placeholder='Direccion' required onChange={(e)=>setDireccion(e.target.value)} value={direccion}></input>

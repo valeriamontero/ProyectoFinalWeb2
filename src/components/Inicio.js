@@ -2,7 +2,7 @@ import React, { useState, useEffect} from 'react';
 import Navbar from './Navbar';
 import Products from './Products';
 import { auth, fs } from '../Config/Config';
-import {Swal} from 'sweetalert2';
+import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import Footer from './Footer';
@@ -128,7 +128,6 @@ const Inicio = () => {
     let Producto;
     const addToCart = (product) => {
         if (uid !== null) {
-            // console.log(product);
             Producto = product;
             Producto['cantidad'] = 1;
             Producto['total'] = Producto.cantidad * Producto.price;
@@ -136,6 +135,11 @@ const Inicio = () => {
                 console.log('Producto agregado al carrito');
             });
         } else {
+            Swal.fire ({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Debes iniciar sesión para agregar productos al carrito',
+                timer: 2000,})
             history('/login');
         }
     };
