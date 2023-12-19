@@ -3,6 +3,7 @@ import { auth, fs } from '../Config/Config';
 import Navbar from './Navbar';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import Footer from './Footer';
 
 export default function PanelVendedor() {
     const [user, setUser] = useState(null);
@@ -56,7 +57,7 @@ export default function PanelVendedor() {
         if (selectedProductId) {
             history(`/modificar/${selectedProductId}`);
         } else {
-            Swal('Error', 'Debe seleccionar un producto para modificarlo', 'error')
+            Swal.fire('Error', 'Debe seleccionar un producto para modificarlo', 'error')
         }
     }
 
@@ -135,6 +136,7 @@ export default function PanelVendedor() {
                     </tbody>
                 </table>
             </div>
+            <Footer/>
         </div>
     );
 }

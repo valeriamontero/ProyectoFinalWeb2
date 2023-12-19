@@ -70,7 +70,7 @@ export default function Navbar({user, prodTotal}) {
                 {user && (
                     <>
                         <div>  
-                            <Link className='navlink' to="perfil">
+                            <Link className='navlink' to="/perfil">
                             Bienvenido:  {user.Nombre}
 
                             </Link>

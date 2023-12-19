@@ -95,6 +95,12 @@ const Inicio = () => {
         setPrecioMaximo(max);
     };
 
+    //cargar la pagina siempre con todos los productos
+
+    useEffect(() => {
+        handleFiltrarPorRango('0', '1000000');
+    }, []); 
+
     useEffect(() => {
         getProducts();
     }, [busqueda, categoria, precioMinimo, precioMaximo]);
@@ -200,7 +206,7 @@ return (
 
                     <h6>Filtrar por rango de precios</h6>
                     <div className="form-check">
-                    <input className="form-check-input" type="radio" name="precioRadio" id="todosPrecios" onClick={() => handleFiltrarPorRango('0', '1000000')}/>
+                    <input className="form-check-input" type="radio" name="precioRadio" id="todosPrecios" onClick={() => handleFiltrarPorRango('0', '1000000')}  defaultChecked="true"/>
                     <label className="form-check-label" htmlFor="todosPrecios">
                     Todos los precios </label></div>
 
