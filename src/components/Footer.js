@@ -2,9 +2,8 @@ import React from 'react';
 
 const Footer = () => {
     return (
-        <div className='footer' style={{ backgroundColor: '#F1EFE7', position: 'fixed', bottom: 0, left: 0, width: '100%' }}>
-          
-            <p className = 'text-center'>Información del footer</p>
+        <div className='footer' style={{ backgroundColor: '#F1EFE7', position: 'relative', bottom: 0, left: 0, width: '100%', padding: '20px 0' }}>
+              <p className='text-center'>&copy; 2023 - Ciclo DW</p>
         </div>
     );
 };
