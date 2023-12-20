@@ -51,24 +51,6 @@ const Orders = () => {
         };
     }, []);
 
-    useEffect(() => {
-        orders.forEach(async (order) => {
-            const productosSnapshot = await fs.collection('Orden').doc(order.id).collection('productos').get();
-            const productos = productosSnapshot.docs.map((doc) => doc.data());
-    
-            const ordenCompleta = productos.every((producto) => producto.estado === 'enviado');
-    
-            if (ordenCompleta && order.estado !== 'completado') {
-                fs.collection('Orden').doc(order.id).update({ estado: 'completado' })
-                    .then(() => {
-                        console.log('Orden marcada como completada:', order.id);
-                    })
-                    .catch(error => {
-                        console.error('Error al marcar la orden como completada:', error);
-                    });
-            }
-        });
-    }, [orders]);
 
     return (
         <div>
@@ -80,7 +62,7 @@ const Orders = () => {
                         <tr>
                             <th style={{ border: '1px solid #ddd', padding: '8px' }}>ID de Orden</th>
                             <th style={{ border: '1px solid #ddd', padding: '8px' }}>Fecha</th>
-                            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Estado de la orden</th>
+                         
                             <th style={{ border: '1px solid #ddd', padding: '8px' }}>Productos</th>
                         </tr>
                     </thead>
@@ -90,7 +72,7 @@ const Orders = () => {
                                 <tr>
                                     <td style={{ border: '1px solid #ddd', padding: '8px' }}>{order.id}</td>
                                     <td style={{ border: '1px solid #ddd', padding: '8px' }}>{order.fecha}</td>
-                                    <td style={{ border: '1px solid #ddd', padding: '8px' }}>{order.estado}</td>
+                                  
                                     <td style={{ border: '1px solid #ddd', padding: '8px' }}>
                                       
                                         <table style={{ borderCollapse: 'collapse', width: '100%' }}>
