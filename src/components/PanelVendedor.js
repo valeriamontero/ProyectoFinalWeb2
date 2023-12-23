@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Footer from './Footer';
 
+
 export default function PanelVendedor() {
     const [user, setUser] = useState(null);
     const [userProducts, setUserProducts] = useState([]);

@@ -1,0 +1,107 @@
+/* General container and typography styles */
+.container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Form and input styles */
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    color: #666;
+  }
+  
+  /* Button styles */
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 10px;
+  }
+  
+  .btn-md {
+    min-width: 120px;
+  }
+  
+  .btn-danger {
+    background-color: #e74c3c;
+    color: white;
+  }
+  
+  .btn-success {
+    background-color: #2ecc71;
+    color: white;
+  }
+  
+  .btn-box {
+    text-align: center;
+  }
+  
+  .btn-box span {
+    display: block;
+    margin-bottom: 20px;
+  }
+  
+  /* Link styles */
+  a {
+    color: #3498db;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Message styles */
+  .success-msg, .error-msg {
+    padding: 10px;
+    border-radius: 4px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .success-msg {
+    background-color: #dff0d8;
+    color: #468847;
+  }
+  
+  .error-msg {
+    background-color: #f0d0d3;
+    color: #df786f;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 480px) {
+    .container {
+      width: 90%;
+    }
+  
+    .btn-box {
+      flex-direction: column;
+    }
+  
+    .btn {
+      margin-bottom: 10px;
+    }
+  }
+  

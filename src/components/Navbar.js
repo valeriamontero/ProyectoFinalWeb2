@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { fs } from '../Config/Config';
 import Inicio from './Inicio';
+import '../estilos/navbar.css'
 
 
 export default function Navbar({user, prodTotal}) {

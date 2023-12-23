@@ -2,6 +2,7 @@ import React,{useState} from "react"
 import {Link} from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 import { auth, fs } from '../Config/Config';
+import '../estilos/login.css'
 
 
 
@@ -47,11 +48,11 @@ export default function Signup(){
             {exito &&<> <div className='success-msg'>{exito}</div>
             </>}
             <form className='form=group' onSubmit={handleLogin}>
-                <label>Email</label>
-                <input type='text' className='form-control' placeholder='Nombre Completo' required onChange={(e)=>setEmail(e.target.value)} value={email}></input>
+                <label>Correo</label>
+                <input type='text' className='form-control' placeholder='Correo electrónico' required onChange={(e)=>setEmail(e.target.value)} value={email}></input>
                 <br/><br/>
-                <label>Password</label>
-                <input type='password' className='form-control' placeholder='Nombre Completo' required onChange={(e)=>setPassword(e.target.value)} value={password}></input>
+                <label>Contraseña</label>
+                <input type='password' className='form-control' placeholder='Contraseña' required onChange={(e)=>setPassword(e.target.value)} value={password}></input>
                 <br/><br/>
 
 

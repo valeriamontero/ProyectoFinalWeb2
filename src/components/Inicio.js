@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import Footer from './Footer';
+import '../estilos/inicio.css'
 
 
 const Inicio = () => {
