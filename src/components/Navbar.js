@@ -15,8 +15,9 @@ import Inicio from './Inicio';
 export default function Navbar({user, prodTotal}) {
 
     const navigate = useNavigate();
-    const vendedor = user && user.Rol ==='Vendedor';
+    const vendedor = user && user.Rol ==='Vendedor';   //verificar si el usuario es vendedor
 
+    // cerrar sesion
     const handleLogout = () => {
         auth.signOut().then(()=>{
             console.log('Ha cerrado sesion');
@@ -30,16 +31,10 @@ export default function Navbar({user, prodTotal}) {
         })
     }
 
-  
-
 
     const navbarStyle = {
         backgroundColor: '#F1EFE7' 
     };
-
-
-   
-    
 
 
 

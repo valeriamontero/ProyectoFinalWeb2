@@ -15,8 +15,7 @@ export default function Carrito(){
 
     const history = useNavigate();
 
-
-
+//obtener usuario autenticado
     function GetUser(){
         const [user, setUser] = useState(null);
         useEffect(() => {
@@ -41,6 +40,7 @@ export default function Carrito(){
     // Obtener productos del carrito
     const [carritoProductos, setCarritoProductos] = useState([]);
 
+    //verificar que el usuario este autenticado y obtener los productos del carrito
     useEffect(() => {
         auth.onAuthStateChanged(user => {
             if (user) {
@@ -87,82 +87,83 @@ const cantidadTotal = cantidad.reduce(arraysCantidad, 0);
  
 
 
- 
+ //subir cantidad de producto en el carrito. verifica que no sea mas del que hay en stock
 
-    //Subir Producto
-    let Producto;
-    const SubirProducto = (carritoProducto) => {
-        // Obtener referencia al documento del producto en Firestore
-        const productoRef = fs.collection('Products').doc(carritoProducto.ID);
-    
-        // Obtener el stock actual del producto
-        productoRef.get().then((doc) => {
-            if (doc.exists) {
-                const productoData = doc.data();
-                const stockDisponible = productoData.cantidad;
-    
-              
-                if (carritoProducto.cantidad + 1 <= stockDisponible) {
-                    const nuevaCantidad = carritoProducto.cantidad + 1;
-                    const nuevoTotal = nuevaCantidad * carritoProducto.price;
-    
-                    auth.onAuthStateChanged(user => {
-                        if (user) {
-                            fs.collection('Carrito ' + user.uid).doc(carritoProducto.ID).update({
-                                cantidad: nuevaCantidad,
-                                total: nuevoTotal
-                            }).then(() => {
-                                console.log("Incremento exitoso");
-                            }).catch((error) => {
-                                console.error("Error al actualizar el carrito:", error);
-                            });
-                        } else {
-                            console.log("No hay usuario");
-                        }
-                    });
-                } else {
-                    Swal.fire({ 
-                        title: "¡Error!",
-                        text: "No hay suficiente stock para este producto.",
-                        icon: "error"
-                    });
-                    
-                }
-            } else {
-                console.log("El producto no existe en la base de datos");
-            }
-        }).catch((error) => {
-            console.error("Error al obtener el producto:", error);
-        });
-    };
-
-    //bajar producto
-
-    const BajarProducto=(carritoProductos)=>{
-        //console.log(carritoProductos)
-        Producto=carritoProductos;
-        if(Producto.cantidad >1) {
-            Producto.cantidad=Producto.cantidad-1;
-            Producto.total=Producto.cantidad*Producto.price;
-
-        }
-        //actualizar firebase
-        auth.onAuthStateChanged(user=>{
-            if(user){
-                fs.collection('Carrito '+user.uid).doc(carritoProductos.ID).update(Producto).then(()=>{
-                    console.log("Decremento exitoso");
-                })
-            }
-            else{
-                console.log("No hay usuario")
-            }
-        })
+ const SubirProducto = (carritoProducto) => {
+    const user = auth.currentUser;
+    if (!user) {
+        console.log('No hay usuario autenticado');
+        return;
     }
+
+    const productoRef = fs.collection('Products').doc(carritoProducto.ID);
+
+    productoRef.get().then((doc) => {
+        if (doc.exists) {
+            const productoData = doc.data();
+            const stockDisponible = productoData.cantidad;
+
+            if (carritoProducto.cantidad + 1 <= stockDisponible) {
+                const nuevaCantidad = carritoProducto.cantidad + 1;
+                const nuevoTotal = nuevaCantidad * carritoProducto.price;
+
+                fs.collection('Carrito ' + user.uid)
+                    .doc(carritoProducto.ID)
+                    .update({
+                        cantidad: nuevaCantidad,
+                        total: nuevoTotal
+                    })
+                    .then(() => {
+                        console.log("Incremento exitoso");
+                    })
+                    .catch((error) => {
+                        console.error("Error al actualizar el carrito:", error);
+                    });
+            } else {
+                Swal.fire({ 
+                    title: "¡Error!",
+                    text: "No hay suficiente stock para este producto.",
+                    icon: "error"
+                });
+            }
+        } else {
+            console.log("El producto no existe en la base de datos");
+        }
+    }).catch((error) => {
+        console.error("Error al obtener el producto:", error);
+    });
+};
+
+const BajarProducto = (carritoProductos) => {
+    const user = auth.currentUser;
+    if (!user) {
+        console.log('No hay usuario autenticado');
+        return;
+    }
+
+    if (carritoProductos.cantidad > 1) {
+        const nuevaCantidad = carritoProductos.cantidad - 1;
+        const nuevoTotal = nuevaCantidad * carritoProductos.price;
+
+        fs.collection('Carrito ' + user.uid)
+            .doc(carritoProductos.ID)
+            .update({
+                cantidad: nuevaCantidad,
+                total: nuevoTotal
+            })
+            .then(() => {
+                console.log("Decremento exitoso");
+            })
+            .catch((error) => {
+                console.error("Error al actualizar el carrito:", error);
+            });
+    }
+};
 
     //Cantidad para el icono de carrito
 const [prodTotal, setprodTotal] = useState(0);
 
-//get productos carrito
+//get productos carrito icono carrito
 
 useEffect(() => {
     auth.onAuthStateChanged(user => {
@@ -187,6 +188,7 @@ const handleDireccionEnvioChange = (event) => {
     setDireccionEnvio(event.target.value);
 };
 
+// Usar la dirección del perfil del usuario
 
 const handleUseProfileAddress = () => {
     if (user && user.Direccion) {
@@ -199,6 +201,8 @@ const handleUseProfileAddress = () => {
         });
     }
 };
+
+// Agarrar la direccion de envio del perfil de usuario
 
 useEffect(() => {
     if (user && user.Direccion) {
@@ -222,9 +226,9 @@ const handleToken = async (token) => {
             // Crear la orden en Firebase
             const uid = auth.currentUser.uid;
             const carritos = await fs.collection('Carrito ' + uid).get();
-            const nuevaOrdenRef = await fs.collection('Orden').doc(); // Crea un nuevo documento para la orden
+            const nuevaOrdenRef = await fs.collection('Orden').doc(); 
     
-            // Aquí se creará la estructura de la orden con los productos del carrito
+
             const productosOrden = [];
     
             for (var snap of carritos.docs) {
@@ -237,7 +241,7 @@ const handleToken = async (token) => {
                     vendedor: carritoProducto.addedBy, 
                     nombre: carritoProducto.title,
                     photo: carritoProducto.url,
-                    precio: carritoProducto.total,
+                    precio: carritoProducto.price,
                   
                 };
     

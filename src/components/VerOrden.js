@@ -8,6 +8,8 @@ const VerOrden = () => {
     const [cantidadTotal, setCantidadTotal] = useState(0);
     const [precioTotal, setPrecioTotal] = useState(0);
 
+
+    // Obtener las órdenes de los productos que le corresponden al vendedor acutal
     useEffect(() => {
         const uid = auth.currentUser.uid;
     
@@ -24,7 +26,7 @@ const VerOrden = () => {
         return () => unsubscribe();
     }, []);
 
-
+//calculo de estadisticas usando cantidad y precio.
     const calcularEstadisticas = () => {
         let totalCantidad = 0;
         let totalPrecio = 0;
@@ -102,30 +104,32 @@ const VerOrden = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {orders.map(order => (
-                                <tr key={order.id}>
-                                    <td>{order.id}</td>
-                                    <td>{order.fecha}</td>
-                                    <td>{order.estado}</td>
-                                    <td>{order.Direccion}</td>
-                                    <td>
-                                        <ul>
-                                            {order.productos.map(producto => (
-                                                <li key={producto.productoID}>
-                                                    <span>{producto.nombre}</span> 
-                                                    <select
-                                                        value={producto.estado}
-                                                        onChange={(e) => updateProductState(order.id, producto.productoID, e.target.value)}
-                                                    >
-                                                        <option value="pendiente">Pendiente</option>
-                                                        <option value="enviado">Enviado</option>
-                                                    </select>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </td>
-                                </tr>
-                            ))}
+                        {orders.map(order => (
+    <tr key={order.id}>
+        <td>{order.id}</td>
+        <td>{order.fecha}</td>
+        <td>{order.estado}</td>
+        <td>{order.Direccion}</td>
+        <td>
+            <ul>
+                {order.productos.map(producto => (
+                    <li key={producto.productoID}>
+                        <span>{producto.nombre}</span>
+                        {/* Mostrar la cantidad del producto */}
+                        <span> || Cantidad: {producto.cantidad}  ||  </span> 
+                        <select
+                            value={producto.estado}
+                            onChange={(e) => updateProductState(order.id, producto.productoID, e.target.value)}
+                        >
+                            <option value="pendiente">Pendiente</option>
+                            <option value="enviado">Enviado</option>
+                        </select>
+                    </li>
+                ))}
+            </ul>
+        </td>
+    </tr>
+))}
                         </tbody>
                         <br></br>
                 

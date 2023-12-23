@@ -5,7 +5,7 @@ import { plus } from 'react-icons-kit/feather/plus';
 import {auth,fs} from '../Config/Config';
 
 
-
+// renderiza un producto individual con las fuciones de subir y bajar cantidad
 
 export default function CarritoProductoIndividual({ carritoProducto, SubirProducto, BajarProducto }) {
 

@@ -45,10 +45,10 @@ export default function PerfilPublico() {
                 .then((doc) => {
                     if (doc.exists) {
                         const userData = doc.data();
-                        const userRole = userData.Rol; // Asegúrate de obtener el campo correcto del rol
+                        const userRole = userData.Rol; 
                         const vendedor = userRole === 'Vendedor';
                         setVendedor(vendedor);
-                        console.log('¿Es el usuario autenticado un vendedor?', vendedor);
+                        console.log('¿Es el usuario autenticado un vendedor?', vendedor);  // veriicar que el usuario sea vendedor. Si es vendedor entonces no se muestra los botones de calificacion
                     } else {
                         console.log('No se encontró el documento del usuario');
                     }
@@ -69,6 +69,7 @@ export default function PerfilPublico() {
         navigate('/');
     };
 
+    // Actualizar la calificación del usuario en Firestore
     const updateUserRating = (newCalificacion) => {
         if (currentUser) {
             const userRef = fs.collection('users').doc(userId);
@@ -98,14 +99,17 @@ export default function PerfilPublico() {
             console.log('Usuario no autenticado');
         }
     };
+
+    const cantidadCalificaciones = user && user.calificaciones ? user.calificaciones.length : 0;
     
+    // Renderizar el botón de calificación
     const renderCalificacionButton = (value) => {
         const hasRated = user && user.calificaciones && currentUser && user.calificaciones.some(calif => calif.userId === currentUser.uid);
 
 
         return (
             <Button
-                color={hasRated && selectedRating === value ? 'danger' : 'success'} // Usar selectedRating en lugar de newCalificacion
+                color={hasRated && selectedRating === value ? 'danger' : 'success'} 
                 onClick={() => {
                     setSelectedRating(value); // Establecer la calificación seleccionada
                     setCalificado(true);
@@ -117,6 +121,8 @@ export default function PerfilPublico() {
             </Button>
         );
     };
+
+    // Calcular el promedio de calificación del usuario por el largo de la lista de calificaciones
 const calcularPromedioCalificacion = () => {
     if (user && user.calificaciones && user.calificaciones.length > 0) {
         const sum = user.calificaciones.reduce((acc, ratingObj) => acc + ratingObj.rating, 0);
@@ -170,7 +176,8 @@ const calcularPromedioCalificacion = () => {
                                 </tr>
                                 <tr>
                                     <td>Calificación</td>
-                                    <td>{calcularPromedioCalificacion()} de 5</td>
+                                    <td>{calcularPromedioCalificacion()} de 5 ({cantidadCalificaciones} calificación{cantidadCalificaciones !== 1 ? 'es' : ''})</td>
+                                   
                                 </tr>
                                 {user && !vendedor &&  ( 
                                 <tr>

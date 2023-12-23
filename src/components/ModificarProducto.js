@@ -3,7 +3,7 @@ import { storage, fs, auth } from '../Config/Config';
 import { Link, useParams } from 'react-router-dom';
 
 export default function UpdateProduct() {
-    const { productId } = useParams();
+    const { productId } = useParams();           // obtener el id del producto por la url
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
@@ -16,6 +16,7 @@ export default function UpdateProduct() {
 
     const types = ['image/png', 'image/jpeg', 'image/jpg'];
 
+    // obtener datos del producto
     useEffect(() => {
         fs.collection('Products')
             .doc(productId)
@@ -37,6 +38,8 @@ export default function UpdateProduct() {
             });
     }, [productId]);
 
+    // verificar formato de imagen
+
     const handleProductImg = (e) => {
         let selectedFile = e.target.files[0];
         if (selectedFile && types.includes(selectedFile.type)) {
@@ -55,7 +58,7 @@ export default function UpdateProduct() {
         if (currentUser) {
             const titleLower = title.toLowerCase();
 
-            if (image) {
+            if (image) {           // si hay imagen seleccionada subirla a la base de datos
                 storage
                     .ref(`product-images/${image.name}`)
                     .put(image)
@@ -86,7 +89,7 @@ export default function UpdateProduct() {
                     .catch((error) => {
                         setUploadError(error.message);
                     });
-            } else {
+            } else {                                    // si no hay imagen seleccionada actualizar los datos del producto solamente
                 fs.collection('Products')
                     .doc(productId)
                     .update({
@@ -162,7 +165,7 @@ export default function UpdateProduct() {
                     required
                     onChange={(e) => {
                         const value = e.target.value;
-                        if (value === '' || /^[1-9]\d*$/.test(value)) {
+                        if (value === '' || /^[0-9]\d*$/.test(value)) {
                             setCantidad(value);
                         }
                     }}

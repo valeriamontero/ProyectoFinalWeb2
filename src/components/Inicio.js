@@ -16,7 +16,7 @@ const Inicio = () => {
     
 
 
-    //obtener usuario logueado
+    //obtener usuario logueado . navbar
 
     useEffect(() => {
         const getUsr = auth.onAuthStateChanged(currentUser => {
@@ -44,11 +44,14 @@ const Inicio = () => {
     const [busqueda, setBusqueda] = useState('');
     const [precioFiltro, setPrecioFiltro] = useState(null);
 
+
+    //obtener productos de la base de datos
+
     const getProducts = async () => {
         try {
             let productsRef = fs.collection('Products');
     
-
+// Si hay una búsqueda, filtrar por título, categoria o precio
             if (busqueda) {
                 const titleLower = busqueda.toLowerCase().trim();
                 productsRef = productsRef.where('title_lower', '>=', titleLower)
@@ -95,12 +98,13 @@ const Inicio = () => {
         setPrecioMaximo(max);
     };
 
-    //cargar la pagina siempre con todos los productos
+// cuando se carga la pagina filtrar entre 0 y 1000000 (todos los productos)
 
     useEffect(() => {
         handleFiltrarPorRango('0', '1000000');
     }, []); 
 
+    // cuando se cambia la busqueda, categoria o precio, obtener productos
     useEffect(() => {
         getProducts();
     }, [busqueda, categoria, precioMinimo, precioMaximo]);
@@ -110,7 +114,7 @@ const Inicio = () => {
 
    /*****************************Carrito */
 
-
+// obtener uid del usuario logueado
     function GetUserUid(){
         const [uid, setUid] = useState(null);
         useEffect(() => {
@@ -124,7 +128,7 @@ const Inicio = () => {
     }
     const uid = GetUserUid();
 
-
+// agregar productos al carrito verificando si el usuario esta logueado
     let Producto;
     const addToCart = (product) => {
         if (uid !== null) {
@@ -157,7 +161,7 @@ const Inicio = () => {
 //Cantidad para el icono de carrito
 const [prodTotal, setprodTotal] = useState(0);
 
-//get productos carrito
+//get productos carrito para el icono de carrito
 
 useEffect(() => {
     auth.onAuthStateChanged(user => {

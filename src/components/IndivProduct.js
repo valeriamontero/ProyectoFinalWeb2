@@ -14,6 +14,8 @@ export default function IndivProduct({ individualProduct, addToCart, user }) {
         }
     };
 
+    //obtener nombre del vendedor
+
     useEffect(() => {
         if (individualProduct.addedBy) {
             fs.collection('users')
@@ -33,8 +35,11 @@ export default function IndivProduct({ individualProduct, addToCart, user }) {
         }
     }, [individualProduct.addedBy]);
 
+
+    //verificar si el usuario es vendedor
     const vendedor = user && user.Rol === 'Vendedor';
 
+    //agregar productos al carrito
     const handleCarrito = () => {
         if (!vendedor) {
             addToCart(individualProduct);
@@ -47,13 +52,17 @@ export default function IndivProduct({ individualProduct, addToCart, user }) {
         }
     };
 
-
+//verificar si el producto esta disponible stock
 
     const [stockDisponible, setStockDisponible] = useState(true);
 
     useEffect(() => {
-        if (individualProduct.cantidad === 0) {
+       
+        const cantidadNumerica = parseInt(individualProduct.cantidad, 10);
+        if (cantidadNumerica === 0 || isNaN(cantidadNumerica)) {        //si la cantidad es 0 o no es un numero, el stock no esta disponible
             setStockDisponible(false); 
+        } else {
+            setStockDisponible(true);
         }
     }, [individualProduct.cantidad]);
 
@@ -66,7 +75,7 @@ export default function IndivProduct({ individualProduct, addToCart, user }) {
             <div className='product-text title'>{individualProduct.title}</div>
             <div className='product-text description'>{individualProduct.description}</div>
             <div className='product-text price'>${individualProduct.price}</div>
-
+    {/* Si no es vendedor y el stock disponible es true entonces se renderiza el boton de carrito. Si es vendedor el boton no se renderiza. */}
             {!vendedor && stockDisponible && (
                 <div className='btn btn-danger btn-md cart-btn' onClick={handleCarrito}>
                     Añadir al carrito

@@ -11,6 +11,8 @@ export default function PanelVendedor() {
     const [selectedProductId, setSelectedProductId] = useState(null);
     const history = useNavigate();
 
+
+    // Obtener usuario logueado y su id. Se pasa ese id a la función GetProductosUsuario
     useEffect(() => {
         const getUsr = auth.onAuthStateChanged((currentUser) => {
             if (currentUser) {
@@ -29,6 +31,7 @@ export default function PanelVendedor() {
         return () => getUsr();
     }, []);
 
+    // Obtener productos del usuario segun si fueron agregados por el id que se consiguió en el useEffect anterior
     const GetProductosUsuario = (userId) => {
         fs.collection('Products')
             .where('addedBy', '==', userId)

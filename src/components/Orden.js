@@ -10,7 +10,8 @@ const Orders = () => {
     useEffect(() => {
         const uid = auth.currentUser.uid;
 
-        const GetOrder = fs.collection('Orden').where('compradorID', '==', uid)
+        // obtener ordenes del usuario con su uid     si hay cambios en Orden se actualiza
+        const GetOrder = fs.collection('Orden').where('compradorID', '==', uid)      
             .onSnapshot(snapshot => {
                 const userOrders = snapshot.docs.map(doc => ({
                     id: doc.id,
@@ -20,6 +21,7 @@ const Orders = () => {
                 GetOrder(userOrders);
             });
 
+            // obtener datos del usuario para el navbar
         const getUsr = auth.onAuthStateChanged(currentUser => {
             if (currentUser) {
                 fs.collection('users')
@@ -33,6 +35,7 @@ const Orders = () => {
             }
         });
 
+        // obtener cantidad de productos en el carrito para el navbar
         const getCartProducts = auth.onAuthStateChanged(user => {
             if (user) {
                 fs.collection('Carrito ' + user.uid).onSnapshot(snapshot => {

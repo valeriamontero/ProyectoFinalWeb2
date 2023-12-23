@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { storage, fs, auth } from '../Config/Config';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export default function AddProduct() {
     const [title, setTitle] = useState('');
@@ -13,19 +14,27 @@ export default function AddProduct() {
     const [successMsg, setSuccessMsg] = useState('');
     const [uploadError, setUploadError] = useState('');
     const [imageError, setImageError] = useState('');
+    const [isValidFormat, setIsValidFormat] = useState(false);
 
     const types = ['image/png', 'image/jpeg', 'image/jpg'];
+
+
+    //verificacion de formato de imagen
 
     const handleProductImg = (e) => {
         let selectedFile = e.target.files[0];
         if (selectedFile && types.includes(selectedFile.type)) {
             setImage(selectedFile);
             setImageError('');
+            setIsValidFormat(true);
         } else {
             setImage(null);
             setImageError('Por favor selecciona una imagen con formato valido');
+            setIsValidFormat(false);
         }
     };
+
+    //agregar productos a la base de datos
 
     const handleAddProducts = (e) => {
         e.preventDefault();
@@ -33,12 +42,11 @@ export default function AddProduct() {
         if (currentUser) {
             const upload = storage.ref(`product-images/${image.name}`).put(image);
             upload.on('state_changed', snapshot => {
-                // ... Código para monitorear la subida de la imagen
             }, error => setUploadError(error.message), () => {
                 storage
                     .ref('product-images')
                     .child(image.name)
-                    .getDownloadURL()
+                    .getDownloadURL()               //obtener url de la imagen de la base de datos y agregarla a la coleccion de productos
                     .then(url => {
                         const titleLower = title.toLowerCase();
                         const priceNumero = Number(price);
@@ -65,7 +73,7 @@ export default function AddProduct() {
                                 setUploadError('');
                                 setTimeout(() => {
                                     setSuccessMsg('');
-                                }, 3000);
+                                }, 2000);
                             })
                             .catch(error => setUploadError(error.message));
                     });
@@ -163,12 +171,13 @@ export default function AddProduct() {
                     <Link to="/panel-vendedor" className='btn btn-success btn-md'>
                         Volver
                     </Link>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <button type="submit" className='btn btn-success btn-md'>
+                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <button type="submit" className='btn btn-success btn-md' disabled={!isValidFormat}>
                         SUBMIT
                     </button>
                 </div>
+                </div>
+               
             </form>
             {uploadError && (
                 <>
